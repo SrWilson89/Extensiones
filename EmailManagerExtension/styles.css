@@ -1,0 +1,295 @@
+/* ===========================================
+   Variables de Tema
+   =========================================== */
+:root {
+  /* Colores - Tema Claro */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  
+  /* Colores de Acento */
+  --accent-primary: #0078d4; /* Azul de Outlook */
+  --accent-primary-hover: #106ebe;
+  --accent-danger: #dc3545;
+  --accent-danger-hover: #c82333;
+  --accent-success: #28a745; /* Indicador de Conexión */
+  
+  /* Bordes y Sombras */
+  --border-color: #dee2e6;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Espaciado */
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+}
+
+/* Variables de Tema Oscuro */
+body.dark-mode {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --bg-tertiary: #333333;
+  --text-primary: #f0f0f0;
+  --text-secondary: #aaaaaa;
+  --text-muted: #666666;
+  --border-color: #3e3e40;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ===========================================
+   Base
+   =========================================== */
+body {
+  width: 400px;
+  min-height: 450px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    min-height: 450px;
+}
+
+main {
+    flex-grow: 1;
+    padding: 0 var(--spacing-md);
+}
+
+/* ===========================================
+   Header
+   =========================================== */
+header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: var(--spacing-sm);
+  color: var(--accent-primary);
+}
+
+.settings-controls {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* ===========================================
+   Botones (General)
+   =========================================== */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.btn-icon-only .theme-icon {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Botones Primarios (Conectar) */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-secondary);
+}
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+/* Botones Secundarios (Cerrar Sesión/Actualizar) */
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+/* Botones Peligro (Borrar) */
+.delete-btn {
+  background-color: transparent;
+  color: var(--accent-danger);
+  padding: 4px;
+  font-size: 1rem;
+  border-radius: var(--border-radius-sm);
+}
+.delete-btn:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* ===========================================
+   Barra de Estado
+   =========================================== */
+.status-bar {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted); /* Color Desconectado */
+    margin-right: var(--spacing-sm);
+    transition: background-color 0.3s;
+}
+
+.status-bar.connected .status-indicator {
+    background-color: var(--accent-success); /* Color Conectado */
+}
+
+/* ===========================================
+   Lista de Correos
+   =========================================== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+#email-list-container {
+    /* Permite el desplazamiento si hay muchos correos */
+    max-height: 250px; 
+    overflow-y: auto;
+}
+
+.email-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--accent-primary);
+  transition: background-color 0.2s, opacity 0.3s;
+  cursor: default;
+}
+
+.email-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.email-info {
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+}
+
+.email-subject {
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.email-from {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.email-preview {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.email-actions {
+    flex-shrink: 0;
+}
+
+/* Estado Vacío / Mensaje de Estado */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+#status-message {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ===========================================
+   Footer
+   =========================================== */
+footer {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  margin-top: auto;
+}
+
+.footer-text {
+  font-size: 10px;
+  color: var(--text-muted);
+}

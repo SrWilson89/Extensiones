@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Correo Outlook</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div id="container">
+    <header>
+      <div class="header-content">
+        <h1 class="header-title">
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          Mi Gestor Outlook
+        </h1>
+        <div class="settings-controls">
+          <button id="auth-button" class="btn btn-primary" aria-label="Conectar con Outlook">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            Conectar
+          </button>
+          <button id="theme-toggle" class="btn btn-icon-only" aria-label="Cambiar tema">
+            <span class="theme-icon">☀️</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="account-status-container" class="status-bar">
+        <div class="status-indicator"></div>
+        <span id="current-account-status">Desconectado</span>
+      </div>
+
+      <section id="email-section">
+        <div class="section-header">
+          <h2 class="section-title">Bandeja de Entrada</h2>
+          <button id="refresh-button" class="btn btn-secondary btn-sm" aria-label="Actualizar correos" style="display: none;">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Actualizar
+          </button>
+        </div>
+
+        <div id="email-list-container">
+          <div id="email-list">
+            <div class="empty-state">
+              <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <p id="status-message">Haz clic en 'Conectar' para iniciar sesión con tu cuenta de Outlook</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p class="footer-text">Extensión de Outlook • v1.0</p>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
