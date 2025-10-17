@@ -2,7 +2,7 @@
    Variables de Tema
    =========================================== */
 :root {
-  /* Colores - Tema Claro */
+  /* Colores - Tema Claro (Valores por defecto, sobrescritos por JS) */
   --bg-primary: #f8f9fa;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e9ecef;
@@ -27,9 +27,12 @@
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-lg: 20px;
+
+  /* Para sombra de acento en el panel */
+  --accent-primary-rgb: 0, 120, 212;
 }
 
-/* Variables de Tema Oscuro */
+/* Variables de Tema Oscuro (Valores por defecto, sobrescritos por JS) */
 body.dark-mode {
   --bg-primary: #1e1e1e;
   --bg-secondary: #252526;
@@ -39,6 +42,7 @@ body.dark-mode {
   --text-muted: #666666;
   --border-color: #3e3e40;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --accent-primary-rgb: 0, 120, 212;
 }
 
 /* ===========================================
@@ -113,15 +117,20 @@ header {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
   display: flex;
   align-items: center;
+}
+
+.btn:hover {
+  transform: scale(1.05);
 }
 
 .btn-icon {
     width: 16px;
     height: 16px;
     margin-right: 4px;
+    transition: transform 0.3s;
 }
 
 .btn-icon-only {
@@ -135,6 +144,12 @@ header {
     font-size: 1.1rem;
     width: 18px; 
     height: 18px;
+}
+
+/* Efecto Fantástico para la Ruedita (Engranaje) */
+#settings-toggle:hover .settings-gear {
+  transform: rotate(360deg);
+  transition: transform 0.6s ease-in-out;
 }
 
 /* Botones Primarios (Conectar) */
@@ -226,12 +241,13 @@ header {
   box-shadow: var(--shadow-sm);
   /* Borde de acento dinámico */
   border-left: 4px solid var(--accent-primary); 
-  transition: background-color 0.2s, opacity 0.3s;
+  transition: background-color 0.2s, opacity 0.3s, transform 0.2s;
   cursor: default;
 }
 
 .email-item:hover {
     background-color: var(--bg-tertiary);
+    transform: translateY(-2px);
 }
 
 .email-info {
@@ -288,15 +304,16 @@ header {
 }
 
 /* ===========================================
-   Panel de Configuración (Personalización)
+   Panel de Configuración (Personalización) - Mejoras Fantásticas
    =========================================== */
 .settings-panel {
     padding: var(--spacing-md);
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-md);
     margin-bottom: var(--spacing-md);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm), 0 0 15px rgba(var(--accent-primary-rgb), 0.2); /* Sombra con acento */
     flex-grow: 1; /* Permite que el panel ocupe el espacio */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .panel-header {
@@ -322,13 +339,14 @@ header {
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: color 0.2s, background-color 0.2s;
+    transition: color 0.2s, background-color 0.2s, transform 0.2s;
     border-radius: var(--border-radius-sm);
 }
 
 #close-settings-btn:hover {
     color: var(--text-primary);
     background-color: var(--bg-tertiary);
+    transform: rotate(90deg);
 }
 
 .setting-group {
@@ -338,6 +356,11 @@ header {
     margin-bottom: var(--spacing-md);
     font-size: 0.9rem;
     color: var(--text-primary);
+    transition: transform 0.2s;
+}
+
+.setting-group:hover {
+    transform: translateX(5px);
 }
 
 .setting-group label {
@@ -353,13 +376,14 @@ header {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     /* Necesario para que el color de texto del select sea dinámico */
     color: var(--text-primary); 
 }
 
 .setting-control:focus {
     border-color: var(--accent-primary);
+    box-shadow: 0 0 5px var(--accent-primary);
     outline: none;
 }
 
@@ -369,6 +393,12 @@ header {
     margin-top: var(--spacing-sm);
     padding-top: var(--spacing-sm);
     border-top: 1px dashed var(--border-color);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* ===========================================

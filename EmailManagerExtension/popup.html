@@ -38,7 +38,7 @@
 
       <div id="settings-panel" class="settings-panel" style="display: none;">
           <div class="panel-header">
-              <h3 class="panel-title">Personalización</h3>
+              <h3 class="panel-title">Personalización Avanzada</h3>
               <button id="close-settings-btn" class="btn btn-icon-only" aria-label="Cerrar personalización">✖</button>
           </div>
 
@@ -49,6 +49,12 @@
                   <option value="Arial">Arial</option>
                   <option value="Verdana">Verdana</option>
                   <option value="Courier New">Courier New (Monoespacio)</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                  <option value="Impact">Impact</option>
               </select>
           </div>
           
@@ -59,6 +65,12 @@
                   <option value="negro">Negro (Claro: Negro / Oscuro: Blanco)</option>
                   <option value="blanco">Blanco (Claro: Blanco / Oscuro: Negro)</option>
                   <option value="gris">Gris Suave</option>
+                  <option value="azul">Azul</option>
+                  <option value="rojo">Rojo</option>
+                  <option value="verde">Verde</option>
+                  <option value="morado">Morado</option>
+                  <option value="amarillo">Amarillo</option>
+                  <option value="naranja">Naranja</option>
               </select>
           </div>
 
@@ -70,10 +82,31 @@
                   <option value="red">Rojo</option>
                   <option value="purple">Púrpura</option>
                   <option value="orange">Naranja</option>
+                  <option value="pink">Rosa</option>
+                  <option value="cyan">Cian</option>
+                  <option value="yellow">Amarillo</option>
+                  <option value="teal">Turquesa</option>
+                  <option value="indigo">Índigo</option>
               </select>
           </div>
 
-          <p class="panel-info">Los cambios se aplican inmediatamente. El tema Claro/Oscuro se cambia desde el pie de página.</p>
+          <div class="setting-group">
+              <label for="background-theme-select">Tema de Fondo:</label>
+              <select id="background-theme-select" class="setting-control">
+                  <option value="default">Por Defecto (Claro/Oscuro)</option>
+                  <option value="pastel">Pastel Suave</option>
+                  <option value="vibrant">Vibrante</option>
+                  <option value="earth">Tonos Tierra</option>
+                  <option value="ocean">Océano</option>
+                  <option value="forest">Bosque</option>
+                  <option value="sunset">Atardecer</option>
+                  <option value="midnight">Medianoche</option>
+                  <option value="candy">Dulce</option>
+                  <option value="metallic">Metálico</option>
+              </select>
+          </div>
+
+          <p class="panel-info">Los cambios se aplican inmediatamente. Experimenta con combinaciones para un look fantástico. El tema Claro/Oscuro se cambia desde el pie de página.</p>
       </div>
       <section id="email-section">
         <div class="section-header">
@@ -104,7 +137,7 @@
     <footer>
       <div class="footer-controls">
         <button id="settings-toggle" class="btn btn-icon-only btn-secondary" aria-label="Configuración">
-             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+             <svg class="btn-icon settings-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9v-.09A1.65 1.65 0 0 0 12 3a1.65 1.65 0 0 0 1.51 1H15a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0 19.4 15z"></path>
             </svg>
@@ -113,7 +146,7 @@
           <span class="theme-icon">☀️</span>
         </button>
       </div>
-      <p class="footer-text">Extensión de Outlook • v1.0</p>
+      <p class="footer-text">Extensión de Outlook • v2.2</p>
     </footer>
   </div>
   <script src="popup.js"></script>

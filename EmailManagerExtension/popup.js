@@ -16,24 +16,90 @@ document.addEventListener('DOMContentLoaded', () => {
   const fontSelect = document.getElementById('font-select');
   const accentColorSelect = document.getElementById('accent-color-select');
   const textColorSelect = document.getElementById('text-color-select');
+  const backgroundThemeSelect = document.getElementById('background-theme-select');
   
   let isAuthenticated = false;
 
-  // Paletas de Colores
+  // Paletas de Colores Expandidas
   const ACCENT_COLORS = {
       outlook: { primary: '#0078D4', hover: '#106EBE' },
       green: { primary: '#28A745', hover: '#1E7E34' },
       red: { primary: '#DC3545', hover: '#C82333' },
       purple: { primary: '#6F42C1', hover: '#5A38A0' },
-      orange: { primary: '#FD7E14', hover: '#D06710' }
+      orange: { primary: '#FD7E14', hover: '#D06710' },
+      pink: { primary: '#E83E8C', hover: '#D63384' },
+      cyan: { primary: '#17A2B8', hover: '#138496' },
+      yellow: { primary: '#FFC107', hover: '#E0A800' },
+      teal: { primary: '#20C997', hover: '#1AA179' },
+      indigo: { primary: '#6610F2', hover: '#5A04E6' }
   };
   
-  // Opciones de Color de Texto (sensibles al tema)
+  // Opciones de Color de Texto Expandidas (sensibles al tema)
   const TEXT_COLORS = {
       default: { light: '#212529', dark: '#f0f0f0' }, 
       negro: { light: '#000000', dark: '#FFFFFF' }, 
       blanco: { light: '#FFFFFF', dark: '#000000' }, 
-      gris: { light: '#495057', dark: '#CED4DA' } 
+      gris: { light: '#495057', dark: '#CED4DA' },
+      azul: { light: '#007BFF', dark: '#66D9EF' },
+      rojo: { light: '#DC3545', dark: '#FF6B6B' },
+      verde: { light: '#28A745', dark: '#51CF66' },
+      morado: { light: '#6F42C1', dark: '#DA77F2' },
+      amarillo: { light: '#FFC107', dark: '#FFD43B' },
+      naranja: { light: '#FD7E14', dark: '#FFB74D' }
+  };
+
+  // Temas de Fondo Nuevos (Define paletas completas para cada tema)
+  const BACKGROUND_THEMES = {
+      default: { 
+          bgPrimary: { light: '#f8f9fa', dark: '#1e1e1e' },
+          bgSecondary: { light: '#ffffff', dark: '#252526' },
+          bgTertiary: { light: '#e9ecef', dark: '#333333' }
+      },
+      pastel: { 
+          bgPrimary: { light: '#F0E7DB', dark: '#202023' },
+          bgSecondary: { light: '#F3D9FA', dark: '#2C2C3A' },
+          bgTertiary: { light: '#E2F0CB', dark: '#38384F' }
+      },
+      vibrant: { 
+          bgPrimary: { light: '#FF9F43', dark: '#2C3E50' },
+          bgSecondary: { light: '#FF6B6B', dark: '#34495E' },
+          bgTertiary: { light: '#4ECDC4', dark: '#7F8C8D' }
+      },
+      earth: { 
+          bgPrimary: { light: '#D2B48C', dark: '#3B2F2F' },
+          bgSecondary: { light: '#C19A6B', dark: '#4A3D3D' },
+          bgTertiary: { light: '#A67B5B', dark: '#5A4D4D' }
+      },
+      ocean: { 
+          bgPrimary: { light: '#AED6F1', dark: '#1B4F72' },
+          bgSecondary: { light: '#85C1E9', dark: '#21618C' },
+          bgTertiary: { light: '#5DADE2', dark: '#2874A6' }
+      },
+      forest: { 
+          bgPrimary: { light: '#D4E157', dark: '#1B5E20' },
+          bgSecondary: { light: '#AED581', dark: '#2E7D32' },
+          bgTertiary: { light: '#9CCC65', dark: '#388E3C' }
+      },
+      sunset: { 
+          bgPrimary: { light: '#FFB74D', dark: '#6A1B9A' },
+          bgSecondary: { light: '#FF8A65', dark: '#7B1FA2' },
+          bgTertiary: { light: '#FF7043', dark: '#8E24AA' }
+      },
+      midnight: { 
+          bgPrimary: { light: '#E8EAF6', dark: '#0D1117' },
+          bgSecondary: { light: '#C5CAE9', dark: '#161B22' },
+          bgTertiary: { light: '#9FA8DA', dark: '#21262D' }
+      },
+      candy: { 
+          bgPrimary: { light: '#FCE4EC', dark: '#880E4F' },
+          bgSecondary: { light: '#F8BBD0', dark: '#AD1457' },
+          bgTertiary: { light: '#F48FB1', dark: '#C2185B' }
+      },
+      metallic: { 
+          bgPrimary: { light: '#E0E0E0', dark: '#212121' },
+          bgSecondary: { light: '#BDBDBD', dark: '#424242' },
+          bgTertiary: { light: '#9E9E9E', dark: '#616161' }
+      }
   };
 
   // ===================================================
@@ -65,6 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
           document.documentElement.style.removeProperty('--text-primary'); 
       }
       textColorSelect.value = prefs.textColor || 'default';
+
+      // 4. Aplicar Tema de Fondo
+      const bgTheme = BACKGROUND_THEMES[prefs.backgroundTheme] || BACKGROUND_THEMES.default;
+      const mode = isDarkMode ? 'dark' : 'light';
+      document.documentElement.style.setProperty('--bg-primary', bgTheme.bgPrimary[mode]);
+      document.documentElement.style.setProperty('--bg-secondary', bgTheme.bgSecondary[mode]);
+      document.documentElement.style.setProperty('--bg-tertiary', bgTheme.bgTertiary[mode]);
+      backgroundThemeSelect.value = prefs.backgroundTheme || 'default';
   }
 
   function saveAndApplyPreference(key, value) {
@@ -81,10 +155,25 @@ document.addEventListener('DOMContentLoaded', () => {
   fontSelect.addEventListener('change', (e) => { saveAndApplyPreference('fontFamily', e.target.value); });
   accentColorSelect.addEventListener('change', (e) => { saveAndApplyPreference('accentColor', e.target.value); });
   textColorSelect.addEventListener('change', (e) => { saveAndApplyPreference('textColor', e.target.value); });
+  backgroundThemeSelect.addEventListener('change', (e) => { saveAndApplyPreference('backgroundTheme', e.target.value); });
   
-  // Mostrar/Ocultar Panel
+  // Mostrar/Ocultar Panel con Transición
   function toggleSettingsPanel(show) {
-      settingsPanel.style.display = show ? 'block' : 'none';
+      if (show) {
+          settingsPanel.style.opacity = 0;
+          settingsPanel.style.transform = 'translateY(20px)';
+          settingsPanel.style.display = 'block';
+          setTimeout(() => {
+              settingsPanel.style.opacity = 1;
+              settingsPanel.style.transform = 'translateY(0)';
+          }, 10);
+      } else {
+          settingsPanel.style.opacity = 0;
+          settingsPanel.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+              settingsPanel.style.display = 'none';
+          }, 300);
+      }
       emailSection.style.display = show ? 'none' : 'block';
       statusBar.style.display = show ? 'none' : 'flex';
       
@@ -95,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Si estamos mostrando el panel, aseguramos que se apliquen los colores por si el tema cambió
       if (show) {
            chrome.storage.local.get('preferences', (data) => {
-               const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+               const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default', backgroundTheme: 'default' };
                applyPreferences(data.preferences || defaultPrefs);
            });
       }
@@ -113,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.set({ theme: newTheme }, () => {
         // Al cambiar el tema, debemos volver a aplicar las preferencias
         chrome.storage.local.get('preferences', (data) => {
-            const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+            const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default', backgroundTheme: 'default' };
             applyPreferences(data.preferences || defaultPrefs);
         });
     });
@@ -197,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-
   // ===================================================
   // LÓGICA DE CORREO Y RENDERIZADO
   // ===================================================
@@ -263,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-
   // ===================================================
   // INICIALIZACIÓN
   // ===================================================
@@ -279,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           
           // Aplicar personalización
-          const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+          const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default', backgroundTheme: 'default' };
           applyPreferences(data.preferences || defaultPrefs);
 
           // 2. Verificar autenticación
