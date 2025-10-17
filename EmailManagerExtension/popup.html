@@ -26,9 +26,6 @@
             </svg>
             Conectar
           </button>
-          <button id="theme-toggle" class="btn btn-icon-only" aria-label="Cambiar tema">
-            <span class="theme-icon">☀️</span>
-          </button>
         </div>
       </div>
     </header>
@@ -39,6 +36,45 @@
         <span id="current-account-status">Desconectado</span>
       </div>
 
+      <div id="settings-panel" class="settings-panel" style="display: none;">
+          <div class="panel-header">
+              <h3 class="panel-title">Personalización</h3>
+              <button id="close-settings-btn" class="btn btn-icon-only" aria-label="Cerrar personalización">✖</button>
+          </div>
+
+          <div class="setting-group">
+              <label for="font-select">Estilo de Letra Principal:</label>
+              <select id="font-select" class="setting-control">
+                  <option value="Segoe UI">Segoe UI (Predeterminado)</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Courier New">Courier New (Monoespacio)</option>
+              </select>
+          </div>
+          
+          <div class="setting-group">
+              <label for="text-color-select">Color de Letra Principal:</label>
+              <select id="text-color-select" class="setting-control">
+                  <option value="default">Por Defecto</option>
+                  <option value="negro">Negro (Claro: Negro / Oscuro: Blanco)</option>
+                  <option value="blanco">Blanco (Claro: Blanco / Oscuro: Negro)</option>
+                  <option value="gris">Gris Suave</option>
+              </select>
+          </div>
+
+          <div class="setting-group">
+              <label for="accent-color-select">Color de Acento:</label>
+              <select id="accent-color-select" class="setting-control">
+                  <option value="outlook">Outlook (Azul)</option>
+                  <option value="green">Verde</option>
+                  <option value="red">Rojo</option>
+                  <option value="purple">Púrpura</option>
+                  <option value="orange">Naranja</option>
+              </select>
+          </div>
+
+          <p class="panel-info">Los cambios se aplican inmediatamente. El tema Claro/Oscuro se cambia desde el pie de página.</p>
+      </div>
       <section id="email-section">
         <div class="section-header">
           <h2 class="section-title">Bandeja de Entrada</h2>
@@ -63,9 +99,20 @@
           </div>
         </div>
       </section>
-    </main>
+      </main>
 
     <footer>
+      <div class="footer-controls">
+        <button id="settings-toggle" class="btn btn-icon-only btn-secondary" aria-label="Configuración">
+             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9v-.09A1.65 1.65 0 0 0 12 3a1.65 1.65 0 0 0 1.51 1H15a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0 19.4 15z"></path>
+            </svg>
+        </button>
+        <button id="theme-toggle" class="btn btn-icon-only btn-secondary" aria-label="Cambiar tema">
+          <span class="theme-icon">☀️</span>
+        </button>
+      </div>
       <p class="footer-text">Extensión de Outlook • v1.0</p>
     </footer>
   </div>

@@ -6,12 +6,12 @@
   --bg-primary: #f8f9fa;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e9ecef;
-  --text-primary: #212529;
+  --text-primary: #212529; /* Color de texto principal, sobrescribible por JS */
   --text-secondary: #6c757d;
   --text-muted: #adb5bd;
   
-  /* Colores de Acento */
-  --accent-primary: #0078d4; /* Azul de Outlook */
+  /* Colores de Acento (Predeterminado: Outlook Azul) */
+  --accent-primary: #0078d4; 
   --accent-primary-hover: #106ebe;
   --accent-danger: #dc3545;
   --accent-danger-hover: #c82333;
@@ -34,7 +34,7 @@ body.dark-mode {
   --bg-primary: #1e1e1e;
   --bg-secondary: #252526;
   --bg-tertiary: #333333;
-  --text-primary: #f0f0f0;
+  --text-primary: #f0f0f0; /* Color de texto principal, sobrescribible por JS */
   --text-secondary: #aaaaaa;
   --text-muted: #666666;
   --border-color: #3e3e40;
@@ -47,7 +47,8 @@ body.dark-mode {
 body {
   width: 400px;
   min-height: 450px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* La fuente se establece dinámicamente por JS */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
   background-color: var(--bg-primary);
   color: var(--text-primary);
   margin: 0;
@@ -123,9 +124,17 @@ header {
     margin-right: 4px;
 }
 
-.btn-icon-only .theme-icon {
+.btn-icon-only {
+    padding: 8px; /* Hace que el botón de icono sea cuadrado */
+    justify-content: center;
+}
+
+.btn-icon-only .theme-icon, 
+.btn-icon-only svg {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    width: 18px; 
+    height: 18px;
 }
 
 /* Botones Primarios (Conectar) */
@@ -202,7 +211,6 @@ header {
 }
 
 #email-list-container {
-    /* Permite el desplazamiento si hay muchos correos */
     max-height: 250px; 
     overflow-y: auto;
 }
@@ -216,7 +224,8 @@ header {
   margin-bottom: var(--spacing-sm);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
-  border-left: 4px solid var(--accent-primary);
+  /* Borde de acento dinámico */
+  border-left: 4px solid var(--accent-primary); 
   transition: background-color 0.2s, opacity 0.3s;
   cursor: default;
 }
@@ -279,6 +288,90 @@ header {
 }
 
 /* ===========================================
+   Panel de Configuración (Personalización)
+   =========================================== */
+.settings-panel {
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    flex-grow: 1; /* Permite que el panel ocupe el espacio */
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+.settings-panel .panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Estilo para el botón de cierre 'X' */
+#close-settings-btn {
+    font-size: 1.1rem;
+    padding: 8px; /* Un poco más grande para el clic */
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: var(--border-radius-sm);
+}
+
+#close-settings-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.setting-group label {
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.setting-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    /* Necesario para que el color de texto del select sea dinámico */
+    color: var(--text-primary); 
+}
+
+.setting-control:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+}
+
+.panel-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--border-color);
+}
+
+/* ===========================================
    Footer
    =========================================== */
 footer {
@@ -287,6 +380,16 @@ footer {
   border-top: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
   margin-top: auto;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: 4px; 
 }
 
 .footer-text {

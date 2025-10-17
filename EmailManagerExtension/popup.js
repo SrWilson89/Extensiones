@@ -8,37 +8,127 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusBar = document.getElementById('account-status-container');
   const refreshButton = document.getElementById('refresh-button');
   
-  // Variables de estado
+  // ELEMENTOS DE PERSONALIZACIÓN
+  const settingsPanel = document.getElementById('settings-panel');
+  const settingsToggle = document.getElementById('settings-toggle');
+  const closeSettingsBtn = document.getElementById('close-settings-btn'); 
+  const emailSection = document.getElementById('email-section'); 
+  const fontSelect = document.getElementById('font-select');
+  const accentColorSelect = document.getElementById('accent-color-select');
+  const textColorSelect = document.getElementById('text-color-select');
+  
   let isAuthenticated = false;
 
+  // Paletas de Colores
+  const ACCENT_COLORS = {
+      outlook: { primary: '#0078D4', hover: '#106EBE' },
+      green: { primary: '#28A745', hover: '#1E7E34' },
+      red: { primary: '#DC3545', hover: '#C82333' },
+      purple: { primary: '#6F42C1', hover: '#5A38A0' },
+      orange: { primary: '#FD7E14', hover: '#D06710' }
+  };
+  
+  // Opciones de Color de Texto (sensibles al tema)
+  const TEXT_COLORS = {
+      default: { light: '#212529', dark: '#f0f0f0' }, 
+      negro: { light: '#000000', dark: '#FFFFFF' }, 
+      blanco: { light: '#FFFFFF', dark: '#000000' }, 
+      gris: { light: '#495057', dark: '#CED4DA' } 
+  };
+
   // ===================================================
-  // LÓGICA DE TEMA
+  // LÓGICA DE PERSONALIZACIÓN Y TEMAS
   // ===================================================
 
-  chrome.storage.local.get('theme', (data) => {
-    if (data.theme === 'dark') {
-      body.classList.add('dark-mode');
-      themeToggle.querySelector('.theme-icon').textContent = '🌙';
-    }
-  });
+  function applyPreferences(prefs) {
+      const isDarkMode = body.classList.contains('dark-mode');
+      
+      // 1. Aplicar Fuente
+      body.style.fontFamily = prefs.fontFamily || 'Segoe UI';
+      fontSelect.value = prefs.fontFamily || 'Segoe UI';
 
+      // 2. Aplicar Color de Acento (Bordes/Botones)
+      const accent = ACCENT_COLORS[prefs.accentColor] || ACCENT_COLORS.outlook;
+      document.documentElement.style.setProperty('--accent-primary', accent.primary);
+      document.documentElement.style.setProperty('--accent-primary-hover', accent.hover);
+      accentColorSelect.value = prefs.accentColor || 'outlook';
+      
+      // 3. Aplicar Color de Letra
+      const textOption = TEXT_COLORS[prefs.textColor] || TEXT_COLORS.default;
+      
+      if (prefs.textColor && prefs.textColor !== 'default') {
+          // Si el usuario eligió un color de letra, lo aplicamos (sensible al modo)
+          const finalTextColor = isDarkMode ? textOption.dark : textOption.light;
+          document.documentElement.style.setProperty('--text-primary', finalTextColor);
+      } else {
+          // Si es 'default', dejamos que el CSS nativo (body.dark-mode) lo controle
+          document.documentElement.style.removeProperty('--text-primary'); 
+      }
+      textColorSelect.value = prefs.textColor || 'default';
+  }
+
+  function saveAndApplyPreference(key, value) {
+      chrome.storage.local.get('preferences', (data) => {
+          const prefs = data.preferences || {};
+          prefs[key] = value;
+          chrome.storage.local.set({ preferences: prefs }, () => {
+              applyPreferences(prefs); 
+          });
+      });
+  }
+
+  // Manejadores de cambios
+  fontSelect.addEventListener('change', (e) => { saveAndApplyPreference('fontFamily', e.target.value); });
+  accentColorSelect.addEventListener('change', (e) => { saveAndApplyPreference('accentColor', e.target.value); });
+  textColorSelect.addEventListener('change', (e) => { saveAndApplyPreference('textColor', e.target.value); });
+  
+  // Mostrar/Ocultar Panel
+  function toggleSettingsPanel(show) {
+      settingsPanel.style.display = show ? 'block' : 'none';
+      emailSection.style.display = show ? 'none' : 'block';
+      statusBar.style.display = show ? 'none' : 'flex';
+      
+      // Actualiza el estilo del botón
+      settingsToggle.classList.toggle('btn-primary', show);
+      settingsToggle.classList.toggle('btn-secondary', !show);
+      
+      // Si estamos mostrando el panel, aseguramos que se apliquen los colores por si el tema cambió
+      if (show) {
+           chrome.storage.local.get('preferences', (data) => {
+               const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+               applyPreferences(data.preferences || defaultPrefs);
+           });
+      }
+  }
+
+  settingsToggle.addEventListener('click', () => { toggleSettingsPanel(settingsPanel.style.display === 'none'); });
+  closeSettingsBtn.addEventListener('click', () => { toggleSettingsPanel(false); });
+
+  // Lógica de Tema (Actualizada para repintar preferencias)
   themeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-mode');
     const isDarkMode = body.classList.contains('dark-mode');
     const newTheme = isDarkMode ? 'dark' : 'light';
     themeToggle.querySelector('.theme-icon').textContent = isDarkMode ? '🌙' : '☀️';
-    chrome.storage.local.set({ theme: newTheme });
+    chrome.storage.local.set({ theme: newTheme }, () => {
+        // Al cambiar el tema, debemos volver a aplicar las preferencias
+        chrome.storage.local.get('preferences', (data) => {
+            const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+            applyPreferences(data.preferences || defaultPrefs);
+        });
+    });
   });
 
   // ===================================================
   // LÓGICA DE AUTENTICACIÓN Y UI
   // ===================================================
 
-  // Alterna el estado de la UI (conectado/desconectado)
   function updateUIState(email = null, name = null) {
+    // Aseguramos que la sección de emails está visible por defecto al cambiar de estado
+    toggleSettingsPanel(false); 
+
     if (isAuthenticated) {
       // Estado Conectado
-      // Actualiza el HTML del botón, incluyendo el icono de "Logout"
       authButton.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>Cerrar Sesión`;
       authButton.classList.add('btn-secondary'); 
       authButton.classList.remove('btn-primary');
@@ -49,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
       loadEmails();
     } else {
       // Estado Desconectado
-      // Icono de "Conectar"
       authButton.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>Conectar`;
       authButton.classList.add('btn-primary');
       authButton.classList.remove('btn-secondary');
@@ -72,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`;
   }
 
-  // Maneja el clic en el botón (Conectar o Cerrar Sesión)
   function handleAuthClick() {
     if (isAuthenticated) {
       handleLogout();
@@ -81,15 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Flujo de inicio de sesión (Outlook)
   function handleLogin() {
     authButton.textContent = 'Conectando...';
 
-    // Se asume que el background.js solo maneja Outlook
     chrome.runtime.sendMessage({ action: 'authenticate' }, (response) => {
       if (response.success) {
         isAuthenticated = true;
-        // Pasa los datos de usuario devueltos
         updateUIState(response.email, response.name); 
       } else {
         alert(`Error de autenticación: ${response.error}`);
@@ -99,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Flujo de cierre de sesión
   function handleLogout() {
     if (confirm('¿Estás seguro de que quieres cerrar la sesión de Outlook?')) {
       chrome.runtime.sendMessage({ action: 'logout' }, (response) => {
@@ -118,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // LÓGICA DE CORREO Y RENDERIZADO
   // ===================================================
 
-  // Dibuja la lista de correos
   function renderEmails(emails) {
     emailList.innerHTML = '';
     
@@ -132,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
       item.className = 'email-item';
       item.dataset.id = email.id; 
       
-      // Usa las clases CSS para el formato
       item.innerHTML = `
         <div class="email-info">
           <div class="email-subject">${email.subject}</div>
@@ -147,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Carga los correos
   function loadEmails() {
     emailList.innerHTML = '<p id="status-message">Cargando correos...</p>';
     
@@ -156,18 +237,16 @@ document.addEventListener('DOMContentLoaded', () => {
         renderEmails(response.emails); 
       } else {
         emailList.innerHTML = `<p id="status-message">Error al cargar correos: ${response.error}. Por favor, vuelve a iniciar sesión.</p>`;
-        // Si hay un error de token, forzamos el estado a desconectado
         isAuthenticated = false; 
         updateUIState();
       }
     });
   }
 
-  // Maneja el borrado de correos
   function handleDelete(e) {
-    if (!e.target.classList.contains('delete-btn')) return;
+    if (!e.target.closest('.delete-btn')) return;
 
-    const messageId = e.target.dataset.id;
+    const messageId = e.target.closest('.delete-btn').dataset.id;
     const emailItem = e.target.closest('.email-item');
     
     if (confirm('¿Estás seguro de que quieres borrar este correo?')) {
@@ -190,8 +269,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===================================================
 
   function initialize() {
-      // 1. Comprueba si hay una cuenta activa y pide sus datos (email/nombre)
-      chrome.storage.local.get(['activeToken', 'activeUserEmail', 'activeUserName'], (data) => {
+      // 1. Cargar el tema y las preferencias guardadas primero
+      chrome.storage.local.get(['activeToken', 'activeUserEmail', 'activeUserName', 'theme', 'preferences'], (data) => {
+          
+          // Aplicar Tema
+          if (data.theme === 'dark') {
+              body.classList.add('dark-mode');
+              themeToggle.querySelector('.theme-icon').textContent = '🌙';
+          }
+          
+          // Aplicar personalización
+          const defaultPrefs = { fontFamily: 'Segoe UI', accentColor: 'outlook', textColor: 'default' };
+          applyPreferences(data.preferences || defaultPrefs);
+
+          // 2. Verificar autenticación
           if (data.activeToken) {
               isAuthenticated = true;
               updateUIState(data.activeUserEmail, data.activeUserName);
