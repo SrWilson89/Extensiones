@@ -1,0 +1,428 @@
+/* ===========================================
+   Variables de Tema
+   =========================================== */
+:root {
+  /* Colores - Tema Claro (Valores por defecto, sobrescritos por JS) */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529; /* Color de texto principal, sobrescribible por JS */
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  
+  /* Colores de Acento (Predeterminado: Outlook Azul) */
+  --accent-primary: #0078d4; 
+  --accent-primary-hover: #106ebe;
+  --accent-danger: #dc3545;
+  --accent-danger-hover: #c82333;
+  --accent-success: #28a745; /* Indicador de Conexión */
+  
+  /* Bordes y Sombras */
+  --border-color: #dee2e6;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Espaciado */
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+
+  /* Para sombra de acento en el panel */
+  --accent-primary-rgb: 0, 120, 212;
+}
+
+/* Variables de Tema Oscuro (Valores por defecto, sobrescritos por JS) */
+body.dark-mode {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --bg-tertiary: #333333;
+  --text-primary: #f0f0f0; /* Color de texto principal, sobrescribible por JS */
+  --text-secondary: #aaaaaa;
+  --text-muted: #666666;
+  --border-color: #3e3e40;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --accent-primary-rgb: 0, 120, 212;
+}
+
+/* ===========================================
+   Base
+   =========================================== */
+body {
+  width: 400px;
+  min-height: 450px;
+  /* La fuente se establece dinámicamente por JS */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    min-height: 450px;
+}
+
+main {
+    flex-grow: 1;
+    padding: 0 var(--spacing-md);
+}
+
+/* ===========================================
+   Header
+   =========================================== */
+header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: var(--spacing-sm);
+  color: var(--accent-primary);
+}
+
+.settings-controls {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* ===========================================
+   Botones (General)
+   =========================================== */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    transition: transform 0.3s;
+}
+
+.btn-icon-only {
+    padding: 8px; /* Hace que el botón de icono sea cuadrado */
+    justify-content: center;
+}
+
+.btn-icon-only .theme-icon, 
+.btn-icon-only svg {
+    margin: 0;
+    font-size: 1.1rem;
+    width: 18px; 
+    height: 18px;
+}
+
+/* Efecto Fantástico para la Ruedita (Engranaje) */
+#settings-toggle:hover .settings-gear {
+  transform: rotate(360deg);
+  transition: transform 0.6s ease-in-out;
+}
+
+/* Botones Primarios (Conectar) */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-secondary);
+}
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+/* Botones Secundarios (Cerrar Sesión/Actualizar) */
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+/* Botones Peligro (Borrar) */
+.delete-btn {
+  background-color: transparent;
+  color: var(--accent-danger);
+  padding: 4px;
+  font-size: 1rem;
+  border-radius: var(--border-radius-sm);
+}
+.delete-btn:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* ===========================================
+   Barra de Estado
+   =========================================== */
+.status-bar {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted); /* Color Desconectado */
+    margin-right: var(--spacing-sm);
+    transition: background-color 0.3s;
+}
+
+.status-bar.connected .status-indicator {
+    background-color: var(--accent-success); /* Color Conectado */
+}
+
+/* ===========================================
+   Lista de Correos
+   =========================================== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+#email-list-container {
+    max-height: 250px; 
+    overflow-y: auto;
+}
+
+.email-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  /* Borde de acento dinámico */
+  border-left: 4px solid var(--accent-primary); 
+  transition: background-color 0.2s, opacity 0.3s, transform 0.2s;
+  cursor: default;
+}
+
+.email-item:hover {
+    background-color: var(--bg-tertiary);
+    transform: translateY(-2px);
+}
+
+.email-info {
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+}
+
+.email-subject {
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.email-from {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.email-preview {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.email-actions {
+    flex-shrink: 0;
+}
+
+/* Estado Vacío / Mensaje de Estado */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+#status-message {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ===========================================
+   Panel de Configuración (Personalización) - Mejoras Fantásticas
+   =========================================== */
+.settings-panel {
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm), 0 0 15px rgba(var(--accent-primary-rgb), 0.2); /* Sombra con acento */
+    flex-grow: 1; /* Permite que el panel ocupe el espacio */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+.settings-panel .panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Estilo para el botón de cierre 'X' */
+#close-settings-btn {
+    font-size: 1.1rem;
+    padding: 8px; /* Un poco más grande para el clic */
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s, transform 0.2s;
+    border-radius: var(--border-radius-sm);
+}
+
+#close-settings-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-tertiary);
+    transform: rotate(90deg);
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: transform 0.2s;
+}
+
+.setting-group:hover {
+    transform: translateX(5px);
+}
+
+.setting-group label {
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.setting-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    /* Necesario para que el color de texto del select sea dinámico */
+    color: var(--text-primary); 
+}
+
+.setting-control:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 5px var(--accent-primary);
+    outline: none;
+}
+
+.panel-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--border-color);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===========================================
+   Footer
+   =========================================== */
+footer {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  margin-top: auto;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: 4px; 
+}
+
+.footer-text {
+  font-size: 10px;
+  color: var(--text-muted);
+}

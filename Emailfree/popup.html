@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Correo Outlook</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div id="container">
+    <header>
+      <div class="header-content">
+        <h1 class="header-title">
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          Mi Gestor Outlook
+        </h1>
+        <div class="settings-controls">
+          <button id="auth-button" class="btn btn-primary" aria-label="Conectar con Outlook">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            <span id="auth-text">Conectar</span>
+          </button>
+        </div>
+      </div>
+      <div id="account-status-container" class="status-bar hidden">
+        <span id="current-account-status"></span>
+        <button id="logout-button" class="btn btn-link btn-xs" aria-label="Cerrar Sesión">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9.75 3a.75.75 0 0 0-.75.75v3.5h-1v-3.5a.75.75 0 0 0-.75-.75h-2a.75.75 0 0 0-.75.75v16.5a.75.75 0 0 0 .75.75h2a.75.75 0 0 0 .75-.75v-3.5h1v3.5a.75.75 0 0 0 .75.75h2a.75.75 0 0 0 .75-.75v-16.5a.75.75 0 0 0-.75-.75h-2z"></path>
+            </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section id="email-section">
+        <div class="loading-overlay">
+          <div class="spinner"></div>
+          <p>Cargando correos...</p>
+        </div>
+        <ul id="email-list">
+          </ul>
+        <div id="empty-state" class="empty-state hidden">
+          <p>Bandeja de entrada vacía o ¡todo leído!</p>
+          <button id="refresh-button" class="btn btn-secondary">
+             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M21.5 2v6h-6"></path>
+                 <path d="M2.5 22v-6h6"></path>
+                 <path d="M2.71 13.91a8 8 0 1 0 17.58-6.19"></path>
+             </svg>
+             Actualizar
+          </button>
+        </div>
+      </section>
+
+      <section id="settings-panel" class="hidden">
+        <button id="close-settings-btn" class="btn btn-link">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Cerrar
+        </button>
+
+        <h2>Configuración</h2>
+        <div class="setting-group">
+            <label for="theme-toggle" class="setting-label">Modo Oscuro</label>
+            <button id="theme-toggle" class="btn btn-secondary" aria-label="Cambiar Tema">
+                <span class="theme-icon">☀️</span>
+            </button>
+        </div>
+
+        <div id="premium-customization">
+            <hr style="margin: 15px 0;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px; color: var(--accent-primary);">Personalización (PRO)</h3>
+            
+            <div class="setting-group">
+                <label for="font-select">Fuente de la Interfaz</label>
+                <select id="font-select" class="setting-control" disabled>
+                    <option value="Segoe UI">Segoe UI (Predeterminado)</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                </select>
+            </div>
+            
+            <div class="setting-group">
+                <label for="accent-color-select">Color de Acento (Botones)</label>
+                <select id="accent-color-select" class="setting-control" disabled>
+                    <option value="outlook">Azul Outlook (Predeterminado)</option>
+                    <option value="green">Verde</option>
+                    <option value="red">Rojo</option>
+                    <option value="purple">Púrpura</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="textColorSelect">Color de Texto de Lista</label>
+                <select id="textColorSelect" class="setting-control" disabled>
+                    <option value="default">Por Defecto</option>
+                    <option value="monochrome">Monocromático</option>
+                </select>
+            </div>
+            
+            <div class="setting-group">
+                <label for="backgroundThemeSelect">Fondo de Lista</label>
+                <select id="backgroundThemeSelect" class="setting-control" disabled>
+                    <option value="default">Claro/Oscuro</option>
+                    <option value="subtle">Sutil</option>
+                    <option value="high-contrast">Alto Contraste</option>
+                </select>
+            </div>
+            
+            <p class="panel-info" id="premium-message" style="color: var(--accent-primary); font-weight: bold; cursor: pointer;">
+                Haga clic aquí para más información sobre la versión PRO.
+            </p>
+
+        </div>
+        </section>
+      </main>
+
+    <footer>
+      <div class="footer-controls">
+        <button id="settings-toggle" class="btn btn-icon-only btn-secondary" aria-label="Configuración">
+             <svg class="btn-icon settings-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z\"></path>
+            </svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

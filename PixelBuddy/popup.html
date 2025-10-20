@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pixel Buddy</title>
+    <meta charset="UTF-8"> 
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div id="container">
+        <h1>Pixel Buddy</h1>
+        
+        <!-- Versión original con div y box-shadow -->
+        <div id="pixel-pal-canvas" class="pixel-canvas"></div>
+        
+        <!-- Versión alternativa con canvas (descomentar para probar) -->
+        <!--
+        <canvas id="pixel-pal-canvas" class="pixel-canvas" width="160" height="160"></canvas>
+        -->
+        
+        <div id="energy-bar-container">
+            <div id="energy-bar-fill"></div>
+        </div>
+        <p id="pet-info">Cargando...</p>
+        
+        <button id="feed-btn">Simular Navegación (+10 Energía)</button>
+    </div>
+
+    <script src="pet_data.js"></script> 
+    <script src="popup.js"></script>
+</body>
+</html>

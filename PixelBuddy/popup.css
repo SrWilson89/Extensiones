@@ -1,0 +1,63 @@
+/* popup.css */
+
+body {
+    width: 240px; 
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* El lienzo: ahora con un tamaño fijo (160x160) */
+.pixel-canvas {
+    /* El dibujo es 4x5 píxeles * 5 de escala = 25x20 píxeles, esto le da un buen marco */
+    width: 160px;
+    height: 160px;
+    margin: 30px auto 10px auto; 
+    
+    /* CLAVE: Eliminamos el padding para evitar el desplazamiento */
+    padding: 0; 
+    
+    /* Un borde que simula el marco de la pantalla */
+    border: 3px solid #ccc; 
+    background-color: #e0e0e0;
+    
+    position: relative; 
+    box-sizing: border-box; /* Asegura que el borde se mida hacia adentro */
+    overflow: visible; /* MODIFICACIÓN: Asegura que box-shadow no se recorte */
+}
+
+/* Estilos de la barra de energía */
+#energy-bar-container {
+    width: 80%;
+    height: 12px;
+    background-color: #ddd;
+    border: 1px solid #aaa;
+    margin: 10px auto;
+}
+
+#energy-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #4CAF50;
+    transition: width 0.5s;
+    border-right: 1px solid #333;
+}
+
+button {
+    padding: 8px 15px;
+    margin-top: 15px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #357ABD;
+}
