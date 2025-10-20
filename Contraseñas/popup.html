@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Contraseñas</title>
+    <meta charset="UTF-8">
+    <style>
+        body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
+        input[type="text"] { width: 90%; padding: 5px; margin-bottom: 10px; }
+        button { padding: 8px 15px; cursor: pointer; }
+        label { display: block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h3>Generador Rápido</h3>
+    
+    <label for="length">Longitud de la contraseña (8-24):</label>
+    <input type="number" id="length" value="16" min="8" max="24" style="width: 50px; margin-bottom: 15px;">
+    
+    <input type="text" id="passwordOutput" value="" readonly>
+    <button id="generateBtn">Generar y Copiar</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>

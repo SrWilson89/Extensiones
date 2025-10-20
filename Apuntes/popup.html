@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Note Taker</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Mis Notas</h1>
+    
+    <div class="note-creator">
+      <textarea id="new-note" placeholder="Escribe una nueva nota..."></textarea>
+      
+      <div class="customization-options">
+        <div class="option-group">
+          <label>Color de texto</label>
+          <input type="color" id="text-color" value="#000000">
+        </div>
+        
+        <div class="option-group">
+          <label>Color de fondo</label>
+          <input type="color" id="bg-color" value="#fff9c4">
+        </div>
+        
+        <div class="option-group">
+          <label>Fuente</label>
+          <select id="font-family">
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Courier New', monospace">Courier</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Comic Sans MS', cursive">Comic Sans</option>
+            <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="'Times New Roman', serif">Times</option>
+          </select>
+        </div>
+      </div>
+      
+      <button id="add-note">➕ Agregar Nota</button>
+    </div>
+    
+    <ul id="notes-list"></ul>
+  </div>
+  
+  <!-- Modal de edición -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <h2>✏️ Editar Nota</h2>
+      <textarea id="edit-note-text" placeholder="Edita tu nota..."></textarea>
+      
+      <div class="customization-options">
+        <div class="option-group">
+          <label>Color de texto</label>
+          <input type="color" id="edit-text-color">
+        </div>
+        
+        <div class="option-group">
+          <label>Color de fondo</label>
+          <input type="color" id="edit-bg-color">
+        </div>
+        
+        <div class="option-group">
+          <label>Fuente</label>
+          <select id="edit-font-family">
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Courier New', monospace">Courier</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Comic Sans MS', cursive">Comic Sans</option>
+            <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="'Times New Roman', serif">Times</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button id="cancel-edit" class="delete-btn">Cancelar</button>
+        <button id="save-edit" class="edit-btn">Guardar</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reddit Chat</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div id="container">
+    <header>
+      <div class="header-content">
+        <h1 class="header-title">
+          <img src="icons/icon-48.png" alt="Reddit Logo" class="header-icon">
+          Reddit Chat
+        </h1>
+        <button id="auth-button" class="btn btn-primary" aria-label="Conectar o desconectar de Reddit">
+          Conectar con Reddit
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div id="account-status-container" class="status-bar">
+        <div class="status-indicator"></div>
+        <span id="current-account-status">Desconectado</span>
+      </div>
+
+      <section id="chat-interface" style="display: none;">
+        <div id="chat-list-container">
+          <h2 class="section-title">Chats Activos</h2>
+          <button id="refresh-button" class="btn btn-secondary btn-sm" aria-label="Actualizar chats">↻ Actualizar</button>
+          <div id="chat-list">
+            <div class="loading-spinner">
+              <svg class="spinner" viewBox="0 0 50 50">
+                <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="#ccc"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <div id="active-chat-window" style="display: none;">
+          <h3 id="chat-header"></h3>
+          <div id="messages-container">
+            <p class="empty-state-message">Selecciona un chat para ver los mensajes.</p>
+          </div>
+          <div id="message-input-area">
+            <input type="text" id="message-input" placeholder="Escribe un mensaje..." disabled>
+            <button id="send-button" class="btn btn-primary" disabled>Enviar</button>
+          </div>
+        </div>
+      </section>
+      
+      <section id="empty-state-section">
+        <div class="empty-state">
+          <img src="icons/icon-128.png" alt="Reddit Logo" class="empty-state-icon">
+          <p id="status-message">Haz clic en <strong>Conectar con Reddit</strong> para empezar a chatear.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p class="footer-text">Reddit Chat • v1.0</p>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
