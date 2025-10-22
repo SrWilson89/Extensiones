@@ -1,0 +1,590 @@
+/* =================================================================
+   🎨 SPACE KING: IDLE CRUSADE - ESTILOS
+   ================================================================= */
+
+/* --- VARIABLES GLOBALES --- */
+:root {
+    --color-bg-dark: #0a0e1a;
+    --color-bg-medium: #151b2e;
+    --color-bg-light: #1f2937;
+    --color-primary: #d4af37;
+    --color-secondary: #c41e3a;
+    --color-accent: #8b0000;
+    --color-text: #e5e7eb;
+    --color-text-dim: #9ca3af;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+}
+
+/* --- RESET Y BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, #000000 100%);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+#game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--color-bg-medium);
+    border: 3px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+    overflow: hidden;
+}
+
+/* --- HEADER: RECURSOS --- */
+#resources {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.resource-main h1 {
+    font-size: 2em;
+    color: var(--color-primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 5px;
+}
+
+.gps-indicator {
+    font-size: 1.1em;
+    color: var(--color-success);
+}
+
+.resource-stats {
+    text-align: right;
+}
+
+.resource-stats p {
+    font-size: 1em;
+    margin: 3px 0;
+}
+
+/* --- SECCIONES --- */
+section {
+    padding: 25px;
+    border-bottom: 1px solid var(--color-bg-light);
+}
+
+section h2 {
+    color: var(--color-primary);
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 10px;
+}
+
+/* --- ZONA DE COMBATE --- */
+#combat-zone {
+    background: var(--color-bg-dark);
+}
+
+#enemy-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+#enemy-visual {
+    flex: 0 0 200px;
+    text-align: center;
+    position: relative;
+}
+
+#enemy-sprite {
+    font-size: 8em;
+    animation: enemyFloat 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+#enemy-sprite:hover {
+    transform: scale(1.1);
+}
+
+#enemy-sprite:active {
+    transform: scale(0.95);
+}
+
+@keyframes enemyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#damage-numbers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.damage-number {
+    position: absolute;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--color-warning);
+    animation: damageFloat 1s ease-out forwards;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes damageFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.5);
+    }
+}
+
+#enemy-stats {
+    flex: 1;
+    min-width: 300px;
+}
+
+.enemy-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#enemy-name {
+    font-size: 1.4em;
+    color: var(--color-secondary);
+    font-weight: bold;
+}
+
+#enemy-level {
+    color: var(--color-text-dim);
+}
+
+#health-bar-container {
+    background: var(--color-bg-light);
+    border: 2px solid var(--color-primary);
+    border-radius: 20px;
+    height: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+#enemy-health-bar {
+    background: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-warning) 100%);
+    height: 100%;
+    width: 100%;
+    transition: width 0.3s ease;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#health-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+#combat-log {
+    background: var(--color-bg-medium);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-primary);
+    text-align: center;
+    color: var(--color-success);
+    font-style: italic;
+}
+
+/* --- ZONA DE TROPAS --- */
+#troops-section {
+    background: var(--color-bg-medium);
+}
+
+#troops-display {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.troop-card {
+    background: var(--color-bg-light);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.troop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+}
+
+.troop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-primary);
+    padding-bottom: 8px;
+}
+
+.troop-header h3 {
+    font-size: 1.1em;
+    color: var(--color-primary);
+}
+
+.troop-level {
+    color: var(--color-text-dim);
+    font-size: 0.9em;
+}
+
+.troop-stats {
+    margin: 10px 0;
+}
+
+.troop-stats p {
+    margin: 5px 0;
+    font-size: 0.95em;
+}
+
+.btn-recruit {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    text-transform: uppercase;
+}
+
+.btn-recruit:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(196, 30, 58, 0.6);
+}
+
+.btn-recruit:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.btn-recruit:disabled {
+    background: var(--color-bg-dark);
+    color: var(--color-text-dim);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* --- ZONA DE MEJORAS --- */
+#upgrade-zone {
+    background: var(--color-bg-dark);
+}
+
+.upgrade-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: var(--color-bg-light);
+    color: var(--color-text);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.tab-btn:hover {
+    background: var(--color-bg-medium);
+}
+
+.tab-btn.active {
+    background: var(--color-primary);
+    color: var(--color-bg-dark);
+}
+
+.tab-content {
+    display: none;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.tab-content.active {
+    display: grid;
+}
+
+.upgrade-card {
+    background: var(--color-bg-medium);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    transition: transform var(--transition-speed);
+}
+
+.upgrade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+}
+
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.upgrade-header h3 {
+    font-size: 1.2em;
+    color: var(--color-primary);
+}
+
+.upgrade-level {
+    color: var(--color-text-dim);
+    font-size: 0.9em;
+}
+
+.upgrade-desc {
+    color: var(--color-text-dim);
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.upgrade-effect {
+    background: var(--color-bg-light);
+    padding: 8px;
+    border-radius: 4px;
+    margin: 10px 0;
+    color: var(--color-success);
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn-upgrade {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #b8860b 100%);
+    color: var(--color-bg-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    text-transform: uppercase;
+}
+
+.btn-upgrade:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+}
+
+.btn-upgrade:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.btn-upgrade:disabled {
+    background: var(--color-bg-dark);
+    color: var(--color-text-dim);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* --- CONTROLES --- */
+#controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: var(--color-bg-medium);
+}
+
+.control-btn {
+    padding: 12px 24px;
+    background: var(--color-bg-light);
+    color: var(--color-text);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.control-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-bg-dark);
+    transform: translateY(-2px);
+}
+
+.control-btn.danger {
+    border-color: var(--color-secondary);
+}
+
+.control-btn.danger:hover {
+    background: var(--color-secondary);
+    color: white;
+}
+
+.control-btn.prestige {
+    border-color: var(--color-success);
+}
+
+.control-btn.prestige:hover {
+    background: var(--color-success);
+    color: white;
+}
+
+/* --- FOOTER --- */
+footer {
+    background: var(--color-bg-dark);
+    padding: 20px;
+    text-align: center;
+    color: var(--color-primary);
+    border-top: 2px solid var(--color-primary);
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+.version {
+    color: var(--color-text-dim);
+    font-size: 0.85em;
+}
+
+/* --- ESTILOS PARA NOTIFICACIONES DE DESBLOQUEO --- */
+.unlock-notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-warning) 100%);
+    color: var(--color-bg-dark);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 3px solid var(--color-primary);
+    box-shadow: 0 5px 30px rgba(212, 175, 55, 0.8);
+    z-index: 1000;
+    transition: top 0.5s ease;
+    min-width: 300px;
+    text-align: center;
+}
+
+.unlock-notification.show {
+    top: 20px;
+}
+
+.unlock-content h3 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: var(--color-bg-dark);
+}
+
+.unlock-content p {
+    font-weight: bold;
+    color: var(--color-bg-dark);
+}
+
+/* --- ESTILOS PARA REQUISITOS DE DESBLOQUEO --- */
+.unlock-req {
+    font-size: 0.8em;
+    color: var(--color-warning);
+    font-style: italic;
+    margin: 5px 0;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1200px) {
+    #troops-display {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    #resources {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .resource-stats {
+        text-align: center;
+    }
+
+    .resource-main h1 {
+        font-size: 1.5em;
+    }
+
+    section h2 {
+        font-size: 1.3em;
+    }
+
+    #enemy-visual {
+        flex: 0 0 100%;
+    }
+
+    #enemy-sprite {
+        font-size: 6em;
+    }
+
+    #troops-display,
+    .tab-content {
+        grid-template-columns: 1fr;
+    }
+
+    #controls {
+        flex-direction: column;
+    }
+
+    .control-btn {
+        width: 100%;
+    }
+    
+    .unlock-notification {
+        min-width: 250px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+    }
+}

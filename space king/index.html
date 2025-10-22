@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPACE KING: IDLE CRUSADE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        
+        <!-- HEADER: Recursos del Jugador -->
+        <header id="resources">
+            <div class="resource-main">
+                <h1>⚜️ ORO IMPERIAL: <span id="gold-display">0</span></h1>
+                <p class="gps-indicator">📈 Generación: <span id="gold-per-second-display">0.0</span>/s</p>
+            </div>
+            <div class="resource-stats">
+                <p>🗡️ DPS Total: <span id="total-dps-display">0.0</span></p>
+                <p>🎯 Zona: <span id="zone-display">1</span></p>
+            </div>
+        </header>
+
+        <!-- ZONA DE COMBATE -->
+        <section id="combat-zone">
+            <h2>⚔️ FRENTE GALÁCTICO</h2>
+            
+            <div id="enemy-container">
+                <div id="enemy-visual">
+                    <div id="enemy-sprite">👾</div>
+                    <div id="damage-numbers"></div>
+                </div>
+                
+                <div id="enemy-stats">
+                    <div class="enemy-header">
+                        <span id="enemy-name">Xeno Menor</span>
+                        <span id="enemy-level">Nivel 1</span>
+                    </div>
+                    
+                    <div id="health-bar-container">
+                        <div id="enemy-health-bar"></div>
+                        <span id="health-text">100 / 100</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="combat-log">
+                <p id="last-kill">Esperando primer contacto...</p>
+            </div>
+        </section>
+
+        <!-- ZONA DE TROPAS -->
+        <section id="troops-section">
+            <h2>🪖 FUERZAS IMPERIALES</h2>
+            <div id="troops-display">
+                <div class="troop-card" id="card-spaceboy">
+                    <div class="troop-header">
+                        <h3>🚀 SPACE BOY</h3>
+                        <span class="troop-level">Nivel: <span id="level-spaceboy">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-spaceboy">0.0</span></p>
+                        <p>💰 Costo: <span id="cost-spaceboy">15</span> Oro</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-spaceboy">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-hatemonger">
+                    <div class="troop-header">
+                        <h3>😈 HATEMONGER</h3>
+                        <span class="troop-level">Nivel: <span id="level-hatemonger">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-hatemonger">0.0</span></p>
+                        <p>💰 Costo: <span id="cost-hatemonger">100</span> Oro</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-hatemonger">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-bpositive">
+                    <div class="troop-header">
+                        <h3>🩸 B-POSITIVE</h3>
+                        <span class="troop-level">Nivel: <span id="level-bpositive">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-bpositive">0.0</span></p>
+                        <p>💰 Costo: <span id="cost-bpositive">500</span> Oro</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-bpositive">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-crusader">
+                    <div class="troop-header">
+                        <h3>✝️ CRUSADER</h3>
+                        <span class="troop-level">Nivel: <span id="level-crusader">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-crusader">0.0</span></p>
+                        <p>💰 Costo: <span id="cost-crusader">2500</span> Oro</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-crusader">RECLUTAR</button>
+                </div>
+
+                <!-- NUEVAS TROPAS -->
+                <div class="troop-card" id="card-inquisitor">
+                    <div class="troop-header">
+                        <h3>🔨 INQUISIDOR</h3>
+                        <span class="troop-level">Nivel: <span id="level-inquisitor">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-inquisitor">0</span></p>
+                        <p>💰 Costo: <span id="cost-inquisitor">10,000</span> Oro</p>
+                        <p class="unlock-req">🔒 Requiere: Burocracia Nvl 10</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-inquisitor">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-titan">
+                    <div class="troop-header">
+                        <h3>🤖 TITÁN IMPERIAL</h3>
+                        <span class="troop-level">Nivel: <span id="level-titan">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-titan">0</span></p>
+                        <p>💰 Costo: <span id="cost-titan">50,000</span> Oro</p>
+                        <p class="unlock-req">🔒 Requiere: Burocracia Nvl 20</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-titan">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-astartes">
+                    <div class="troop-header">
+                        <h3>⚡ ASTARTES</h3>
+                        <span class="troop-level">Nivel: <span id="level-astartes">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-astartes">0</span></p>
+                        <p>💰 Costo: <span id="cost-astartes">250,000</span> Oro</p>
+                        <p class="unlock-req">🔒 Requiere: Burocracia Nvl 40</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-astartes">RECLUTAR</button>
+                </div>
+
+                <div class="troop-card" id="card-emperor">
+                    <div class="troop-header">
+                        <h3>👑 GUARDIA DEL EMPERADOR</h3>
+                        <span class="troop-level">Nivel: <span id="level-emperor">0</span></span>
+                    </div>
+                    <div class="troop-stats">
+                        <p>⚔️ DPS: <span id="dps-emperor">0</span></p>
+                        <p>💰 Costo: <span id="cost-emperor">2,000,000</span> Oro</p>
+                        <p class="unlock-req">🔒 Requiere: Burocracia Nvl 80</p>
+                    </div>
+                    <button class="btn-recruit" id="buy-emperor">RECLUTAR</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONA DE MEJORAS -->
+        <section id="upgrade-zone">
+            <h2>📜 BUROCRACIA Y DOCTRINA</h2>
+            
+            <div class="upgrade-tabs">
+                <button class="tab-btn active" data-tab="infrastructure">INFRAESTRUCTURA</button>
+                <button class="tab-btn" data-tab="doctrine">DOCTRINA</button>
+            </div>
+
+            <div id="tab-infrastructure" class="tab-content active">
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <h3>🏛️ BUROCRACIA IMPERIAL</h3>
+                        <span class="upgrade-level">Nivel: <span id="level-bureaucracy">0</span></span>
+                    </div>
+                    <p class="upgrade-desc">Incrementa la generación pasiva de oro</p>
+                    <div class="upgrade-effect">+1.0 Oro/s por nivel</div>
+                    <button class="btn-upgrade" id="upgrade-bureaucracy">
+                        MEJORAR - <span id="cost-bureaucracy">10</span> 💰
+                    </button>
+                </div>
+
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <h3>📊 CENTRO DE RECLUTAMIENTO</h3>
+                        <span class="upgrade-level">Nivel: <span id="level-recruitment">0</span></span>
+                    </div>
+                    <p class="upgrade-desc">Reduce el costo de todas las unidades</p>
+                    <div class="upgrade-effect">-2% de costo por nivel</div>
+                    <button class="btn-upgrade" id="upgrade-recruitment">
+                        MEJORAR - <span id="cost-recruitment">50</span> 💰
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-doctrine" class="tab-content">
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <h3>⚔️ DOCTRINA DE FUEGO</h3>
+                        <span class="upgrade-level">Nivel: <span id="level-doctrine">0</span></span>
+                    </div>
+                    <p class="upgrade-desc">Aumenta el DPS de todas las unidades</p>
+                    <div class="upgrade-effect">+5% DPS por nivel</div>
+                    <button class="btn-upgrade" id="upgrade-doctrine">
+                        MEJORAR - <span id="cost-doctrine">200</span> 💰
+                    </button>
+                </div>
+
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <h3>🎖️ ÉLITE TÁCTICA</h3>
+                        <span class="upgrade-level">Nivel: <span id="level-elite">0</span></span>
+                    </div>
+                    <p class="upgrade-desc">Multiplica el daño crítico</p>
+                    <div class="upgrade-effect">+10% crítico por nivel</div>
+                    <button class="btn-upgrade" id="upgrade-elite">
+                        MEJORAR - <span id="cost-elite">1000</span> 💰
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTROLES -->
+        <section id="controls">
+            <button id="btn-save" class="control-btn">💾 GUARDAR</button>
+            <button id="btn-load" class="control-btn">📂 CARGAR</button>
+            <button id="btn-reset" class="control-btn danger">🔄 REINICIAR</button>
+            <button id="btn-prestige" class="control-btn prestige">👑 PRESTIGIO</button>
+        </section>
+
+        <footer>
+            <p>⚜️ Por el Dios Emperador Espacial ⚜️</p>
+            <p class="version">v0.3 - Idle Crusade</p>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
