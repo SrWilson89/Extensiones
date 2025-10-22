@@ -3,21 +3,215 @@
 <head>
     <title>Generador de Contraseñas</title>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
-        input[type="text"] { width: 90%; padding: 5px; margin-bottom: 10px; }
-        button { padding: 8px 15px; cursor: pointer; }
-        label { display: block; margin-bottom: 5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 320px;
+            padding: 20px;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-weight: 500;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .length-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .length-btn {
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .length-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .length-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .custom-length {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .custom-length span {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-radius: 8px;
+            font-family: 'Roboto', monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        #generateBtn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode #generateBtn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a2e;
+        }
+
+        #generateBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        #generateBtn:active {
+            transform: translateY(0);
+        }
+
+        #generateBtn.copied {
+            background: #4caf50;
+            color: white;
+        }
     </style>
 </head>
-<body>
-    <h3>Generador Rápido</h3>
-    
-    <label for="length">Longitud de la contraseña (8-24):</label>
-    <input type="number" id="length" value="16" min="8" max="24" style="width: 50px; margin-bottom: 15px;">
-    
-    <input type="text" id="passwordOutput" value="" readonly>
-    <button id="generateBtn">Generar y Copiar</button>
+<body class="light-mode">
+    <div class="container">
+        <div class="header">
+            <h3>Generador de Contraseñas</h3>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+        
+        <label>Longitud rápida:</label>
+        <div class="length-buttons">
+            <button class="length-btn" data-length="8">8</button>
+            <button class="length-btn" data-length="12">12</button>
+            <button class="length-btn active" data-length="16">16</button>
+            <button class="length-btn" data-length="20">20</button>
+        </div>
+
+        <div class="custom-length">
+            <span>Personalizada:</span>
+            <input type="number" id="length" value="16" min="8" max="32">
+        </div>
+        
+        <input type="text" id="passwordOutput" value="" readonly placeholder="Tu contraseña aparecerá aquí">
+        <button id="generateBtn">Copiar</button>
+    </div>
 
     <script src="popup.js"></script>
 </body>

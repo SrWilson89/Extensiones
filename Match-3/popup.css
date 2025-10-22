@@ -1,0 +1,165 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 380px;
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 15px;
+}
+
+h1 {
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 10px 0;
+    font-size: 28px;
+}
+
+#scores-panel {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#scores-panel p {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+#scores-panel span {
+    color: #667eea;
+    font-size: 18px;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr); 
+    grid-template-rows: repeat(8, 1fr);
+    width: 336px;
+    height: 336px;
+    margin: 0 auto;
+    border-radius: 10px;
+    background-color: #2d3748;
+    position: relative;
+    padding: 8px;
+    gap: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.tile {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    position: relative;
+}
+
+.tile:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+/* Colores Base con gradientes circulares */
+.color-yellow { 
+    background: radial-gradient(circle at 30% 30%, #FFF176, #FFEB3B, #FBC02D);
+    box-shadow: 0 2px 4px rgba(251, 192, 45, 0.4);
+}
+.color-blue { 
+    background: radial-gradient(circle at 30% 30%, #64B5F6, #2196F3, #1976D2);
+    box-shadow: 0 2px 4px rgba(25, 118, 210, 0.4);
+}
+.color-red { 
+    background: radial-gradient(circle at 30% 30%, #EF5350, #F44336, #D32F2F);
+    box-shadow: 0 2px 4px rgba(211, 47, 47, 0.4);
+}
+.color-pink { 
+    background: radial-gradient(circle at 30% 30%, #F06292, #E91E63, #C2185B);
+    box-shadow: 0 2px 4px rgba(194, 24, 91, 0.4);
+}
+.color-green { 
+    background: radial-gradient(circle at 30% 30%, #66BB6A, #4CAF50, #388E3C);
+    box-shadow: 0 2px 4px rgba(56, 142, 60, 0.4);
+}
+
+/* Estilos de las Fichas Especiales */
+.special-square::after {
+    content: "◼️";
+    font-size: 20px;
+    position: absolute;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
+.special-rayo::after {
+    content: "⚡";
+    font-size: 22px;
+    position: absolute;
+    animation: pulse 0.8s infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 235, 59, 0.8));
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Estilo para la ficha seleccionada */
+.selected {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.6);
+    z-index: 10;
+}
+
+/* Animación de eliminación */
+@keyframes disappear {
+    0% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.5;
+    }
+    100% { 
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.removing {
+    animation: disappear 0.3s ease-out forwards;
+}
+
+/* Botón de reinicio */
+#restart-button {
+    margin-top: 15px;
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#restart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#restart-button:active {
+    transform: translateY(0);
+}

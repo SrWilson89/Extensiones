@@ -1,0 +1,446 @@
+window.initPrimary = function() {
+    // === CONFIGURACIÓN DEL JUEGO ===
+    const GRID_SIZE = 8;
+    const NUM_COLORS = 4;
+    const CANDY_COLORS = ['color-0', 'color-1', 'color-2', 'color-3'];
+    const SCORE_PER_MATCH = 10;
+    
+    // === ELEMENTOS DEL DOM ===
+    const board = document.getElementById('game-board');
+    const scoreDisplay = document.getElementById('score');
+    const appContainer = document.getElementById('primary-app');
+    
+    // === ESTADO DEL JUEGO ===
+    let gameBoard = [];
+    let score = 0;
+    let selectedCandy = null; // {row: r, col: c, element: el}
+    let isProcessing = false; // Bandera para evitar clics mientras hay animaciones
+    
+    // === FUNCIONES DE UTILIDAD ===
+    
+    /** Genera una esfera aleatoria */
+    function getRandomCandy() {
+        return Math.floor(Math.random() * NUM_COLORS);
+    }
+
+    /** Obtiene el ID del color (índice 0-3) de un elemento */
+    function getColorId(element) {
+        for (let i = 0; i < NUM_COLORS; i++) {
+            if (element.classList.contains(`color-${i}`)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Crea un elemento visual de esfera */
+    function createCandyElement(colorId) {
+        const candyEl = document.createElement('div');
+        candyEl.classList.add('candy', CANDY_COLORS[colorId]);
+        return candyEl;
+    }
+
+    /** Actualiza la visualización de la puntuación */
+    function updateScoreDisplay() {
+        scoreDisplay.textContent = `Puntuación: ${score}`;
+    }
+
+    /**
+     * Dibuja un efecto de explosión en una posición.
+     * @param {number} r - Fila
+     * @param {number} c - Columna
+     */
+    function drawExplosion(r, c) {
+        const cellWidth = board.clientWidth / GRID_SIZE;
+        const cellHeight = board.clientHeight / GRID_SIZE;
+        const explosionEl = document.createElement('div');
+        
+        // Calcular la posición central de la celda
+        const posX = c * cellWidth + cellWidth / 2;
+        const posY = r * cellHeight + cellHeight / 2;
+
+        explosionEl.classList.add('explode-animation');
+        explosionEl.style.left = `${posX}px`;
+        explosionEl.style.top = `${posY}px`;
+        
+        board.appendChild(explosionEl);
+
+        // Remover el elemento después de la animación
+        setTimeout(() => {
+            explosionEl.remove();
+        }, 500); 
+    }
+
+    /**
+     * Dibuja un rayo entre dos celdas (para combinaciones especiales)
+     * NOTA: Esta función es decorativa y requiere una lógica de combos especiales
+     * más compleja que no está implementada aquí.
+     */
+    function drawLightning(r1, c1, r2, c2) {
+        // Lógica de rayo simplificada
+        const cellWidth = board.clientWidth / GRID_SIZE;
+        const cellHeight = board.clientHeight / GRID_SIZE;
+        
+        const centerX1 = c1 * cellWidth + cellWidth / 2;
+        const centerY1 = r1 * cellHeight + cellHeight / 2;
+        const centerX2 = c2 * cellWidth + cellWidth / 2;
+        const centerY2 = c2 * cellHeight + cellHeight / 2;
+
+        const distance = Math.hypot(centerX2 - centerX1, centerY2 - centerY1);
+        const angle = Math.atan2(centerY2 - centerY1, centerX2 - centerX1);
+
+        const line = document.createElement('div');
+        line.classList.add('lightning-line');
+        line.style.width = `${distance}px`;
+        line.style.height = '4px'; 
+        line.style.left = `${centerX1}px`;
+        line.style.top = `${centerY1}px`;
+        line.style.transform = `rotate(${angle}rad)`;
+        line.style.transformOrigin = `0 0`;
+
+        board.appendChild(line);
+
+        setTimeout(() => {
+            line.remove();
+        }, 500);
+    }
+    
+    // === LÓGICA PRINCIPAL DEL JUEGO ===
+    
+    /**
+     * Comprueba si hay coincidencias de 3 o más en el tablero.
+     * @returns {Array<Object>} Lista de coordenadas {r, c} de las esferas a eliminar.
+     */
+    function checkMatches() {
+        const matches = [];
+
+        // 1. Comprobar Horizontal
+        for (let r = 0; r < GRID_SIZE; r++) {
+            for (let c = 0; c < GRID_SIZE - 2; c++) {
+                const color = getColorId(gameBoard[r][c]);
+                if (color !== -1 && getColorId(gameBoard[r][c+1]) === color && getColorId(gameBoard[r][c+2]) === color) {
+                    // Match de 3 o más encontrado
+                    let currentC = c;
+                    while (currentC < GRID_SIZE && getColorId(gameBoard[r][currentC]) === color) {
+                        const cell = {r, c: currentC};
+                        if (!matches.some(m => m.r === r && m.c === currentC)) {
+                            matches.push(cell);
+                        }
+                        currentC++;
+                    }
+                    c = currentC - 1; // Saltar celdas ya verificadas en este match
+                }
+            }
+        }
+
+        // 2. Comprobar Vertical
+        for (let c = 0; c < GRID_SIZE; c++) {
+            for (let r = 0; r < GRID_SIZE - 2; r++) {
+                const color = getColorId(gameBoard[r][c]);
+                if (color !== -1 && getColorId(gameBoard[r+1][c]) === color && getColorId(gameBoard[r+2][c]) === color) {
+                    // Match de 3 o más encontrado
+                    let currentR = r;
+                    while (currentR < GRID_SIZE && getColorId(gameBoard[currentR][c]) === color) {
+                        const cell = {r: currentR, c};
+                        if (!matches.some(m => m.r === currentR && m.c === c)) {
+                            matches.push(cell);
+                        }
+                        currentR++;
+                    }
+                    r = currentR - 1; // Saltar celdas ya verificadas
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    /**
+     * Elimina las esferas que coinciden y desencadena animaciones.
+     * @param {Array<Object>} matches - Coordenadas de las esferas a eliminar.
+     * @returns {Promise<void>} Promesa que se resuelve cuando las animaciones terminan.
+     */
+    function removeMatches(matches) {
+        return new Promise(resolve => {
+            if (matches.length === 0) {
+                return resolve();
+            }
+
+            // Añadir puntuación
+            score += matches.length * SCORE_PER_MATCH;
+            updateScoreDisplay();
+
+            // Animación de remoción
+            matches.forEach(({r, c}) => {
+                const candyEl = gameBoard[r][c];
+                drawExplosion(r, c); 
+                candyEl.classList.add('remove');
+                
+                // Marcar como nulo en la matriz de juego
+                gameBoard[r][c] = null;
+            });
+
+            // Esperar a que termine la animación
+            setTimeout(() => {
+                matches.forEach(({r, c}) => {
+                    // Eliminar el elemento del DOM
+                    const candyEl = board.children[r * GRID_SIZE + c];
+                    if (candyEl) candyEl.remove(); 
+                });
+                
+                // Continuar con la caída
+                resolve();
+            }, 300); // 300ms es la duración de la animación 'remove'
+        });
+    }
+
+    /**
+     * Hace caer las esferas por gravedad para rellenar los espacios nulos.
+     * @returns {Promise<void>} Promesa que se resuelve cuando la caída termina.
+     */
+    function applyGravity() {
+        return new Promise(resolve => {
+            let movesMade = false;
+            
+            // Recorrer columna por columna, de abajo hacia arriba
+            for (let c = 0; c < GRID_SIZE; c++) {
+                let emptyRow = GRID_SIZE - 1; 
+                for (let r = GRID_SIZE - 1; r >= 0; r--) {
+                    if (gameBoard[r][c] !== null) {
+                        if (r !== emptyRow) {
+                            // Mover el elemento visualmente
+                            const candyEl = gameBoard[r][c];
+                            const oldIndex = r * GRID_SIZE + c;
+                            const newIndex = emptyRow * GRID_SIZE + c;
+
+                            // Actualizar la posición en el DOM con animación
+                            // La celda vacía ahora es la nueva celda de la esfera
+                            const oldCell = board.children[oldIndex];
+                            const newCell = board.children[newIndex];
+                            
+                            // 1. Clonar el elemento de la celda antigua
+                            const clone = candyEl.cloneNode(true);
+                            
+                            // 2. Insertar el clon en la posición de destino
+                            board.insertBefore(clone, newCell);
+                            
+                            // 3. Eliminar el elemento original de la posición inicial
+                            candyEl.remove();
+
+                            // 4. Actualizar la matriz de juego (sin animación)
+                            gameBoard[emptyRow][c] = gameBoard[r][c];
+                            gameBoard[r][c] = null;
+                            
+                            // 5. Aplicar animación de caída al clon (usando CSS transition)
+                            clone.style.transition = 'transform 0.2s ease-in';
+                            // NOTA: Para hacer una animación de caída real se requeriría posicionamiento absoluto, 
+                            // pero por simplicidad de un tablero de Grid/Flex, usamos el truco de reasignación del DOM.
+                            // Si se quiere una animación fluida, se debe usar:
+                            // const distance = (emptyRow - r) * (board.clientHeight / GRID_SIZE);
+                            // candyEl.style.transform = `translateY(${distance}px)`;
+                            
+                            movesMade = true;
+                        }
+                        emptyRow--;
+                    }
+                }
+            }
+
+            // Esperar el tiempo de la animación de caída (o un pequeño delay si no hay animación CSS)
+            setTimeout(() => {
+                resolve(movesMade);
+            }, movesMade ? 200 : 50); // 200ms para la caída
+        });
+    }
+
+    /**
+     * Rellena las celdas nulas en la parte superior del tablero con nuevas esferas.
+     * @returns {Promise<void>} Promesa que se resuelve después de la animación de relleno.
+     */
+    function refillBoard() {
+        return new Promise(resolve => {
+            let fillNeeded = false;
+            for (let c = 0; c < GRID_SIZE; c++) {
+                for (let r = 0; r < GRID_SIZE; r++) {
+                    if (gameBoard[r][c] === null) {
+                        const newColor = getRandomCandy();
+                        const newCandyEl = createCandyElement(newColor);
+                        
+                        // Insertar en la posición r, c
+                        const index = r * GRID_SIZE + c;
+                        const targetCell = board.children[index];
+                        if (targetCell) {
+                            board.insertBefore(newCandyEl, targetCell);
+                        } else {
+                            board.appendChild(newCandyEl); // Debería ir al final si es la última celda
+                        }
+
+                        gameBoard[r][c] = newCandyEl;
+                        fillNeeded = true;
+                    }
+                }
+            }
+
+            // Animación de aparición/caída de nuevas esferas
+            setTimeout(resolve, fillNeeded ? 100 : 50); 
+        });
+    }
+
+    /**
+     * Bucle principal de procesamiento: elimina, cae, rellena, y repite hasta que no haya más coincidencias.
+     */
+    async function processMatchesAndRefill() {
+        isProcessing = true;
+        let matchesFound = true;
+
+        while (matchesFound) {
+            const matches = checkMatches();
+            
+            if (matches.length > 0) {
+                await removeMatches(matches);
+                await applyGravity();
+                await refillBoard();
+            } else {
+                matchesFound = false;
+            }
+        }
+        
+        isProcessing = false;
+        // Opcional: Checkear si hay movimientos posibles. Si no, mezclar tablero.
+    }
+
+    /**
+     * Maneja el clic en una esfera del tablero.
+     */
+    function handleCandyClick(event) {
+        if (isProcessing) return;
+
+        const clickedEl = event.target;
+        if (!clickedEl.classList.contains('candy')) return;
+        
+        // Obtener coordenadas de la esfera clicada
+        const index = Array.from(board.children).indexOf(clickedEl);
+        const r = Math.floor(index / GRID_SIZE);
+        const c = index % GRID_SIZE;
+
+        if (selectedCandy) {
+            // Caso 2: Segunda esfera seleccionada
+            const r2 = selectedCandy.row;
+            const c2 = selectedCandy.col;
+
+            const isNeighbor = (Math.abs(r - r2) + Math.abs(c - c2) === 1);
+
+            if (isNeighbor) {
+                // Intercambiar y verificar
+                swapCandies(r, c, r2, c2).then(() => {
+                    const matches = checkMatches();
+                    
+                    if (matches.length > 0) {
+                        // Movimiento válido: procesar coincidencias
+                        processMatchesAndRefill();
+                    } else {
+                        // Movimiento inválido: revertir el intercambio
+                        swapCandies(r, c, r2, c2); 
+                    }
+                    
+                    // Deseleccionar
+                    selectedCandy.element.classList.remove('selected');
+                    selectedCandy = null;
+                });
+            } else {
+                // Clic en una esfera no adyacente: deseleccionar la anterior y seleccionar esta
+                selectedCandy.element.classList.remove('selected');
+                selectedCandy = {r, c, element: clickedEl};
+                clickedEl.classList.add('selected');
+            }
+        } else {
+            // Caso 1: Primera esfera seleccionada
+            selectedCandy = {r, c, element: clickedEl};
+            clickedEl.classList.add('selected');
+        }
+    }
+
+    /**
+     * Intercambia dos esferas visual y lógicamente.
+     * @param {number} r1, c1 - Coordenadas de la primera esfera.
+     * @param {number} r2, c2 - Coordenadas de la segunda esfera.
+     * @returns {Promise<void>} Promesa que se resuelve después de la animación de intercambio.
+     */
+    function swapCandies(r1, c1, r2, c2) {
+        return new Promise(resolve => {
+            isProcessing = true; // Bloquear interacción durante el swap
+            
+            const candy1 = gameBoard[r1][c1];
+            const candy2 = gameBoard[r2][c2];
+
+            // 1. Swap en la matriz lógica
+            gameBoard[r1][c1] = candy2;
+            gameBoard[r2][c2] = candy1;
+
+            // 2. Swap visual en el DOM (Usando el truco de reasignación de hijos)
+            const index1 = r1 * GRID_SIZE + c1;
+            const index2 = r2 * GRID_SIZE + c2;
+            
+            // Obtener las celdas DOM y asegurar que la inserción sea correcta
+            const cell1 = board.children[index1];
+            const cell2 = board.children[index2];
+
+            // Reemplazar: cell1 toma la posición de cell2 y viceversa
+            // La animación de movimiento se haría con CSS transform, pero es complejo
+            
+            // Reasignamos los elementos para que el índice del DOM coincida con la matriz
+            if (index1 < index2) {
+                board.insertBefore(candy2, cell1); // Mueve candy2 a pos1
+                board.insertBefore(candy1, cell2); // Mueve candy1 a pos2
+            } else {
+                board.insertBefore(candy1, cell2); // Mueve candy1 a pos2
+                board.insertBefore(candy2, cell1); // Mueve candy2 a pos1
+            }
+
+            // Esperar el tiempo de la animación de intercambio (si existiera)
+            setTimeout(() => {
+                isProcessing = false;
+                resolve();
+            }, 100); // 100ms de animación de swap
+        });
+    }
+
+    /**
+     * Inicializa el tablero con esferas aleatorias sin coincidencias iniciales.
+     */
+    function createBoard() {
+        board.innerHTML = '';
+        gameBoard = [];
+        score = 0;
+        updateScoreDisplay();
+        selectedCandy = null;
+
+        for (let r = 0; r < GRID_SIZE; r++) {
+            gameBoard[r] = [];
+            for (let c = 0; c < GRID_SIZE; c++) {
+                let colorId;
+                
+                // Asegurarse de que no haya un match de 3 al generar
+                do {
+                    colorId = getRandomCandy();
+                } while (
+                    (c >= 2 && getColorId(gameBoard[r][c-1]) === colorId && getColorId(gameBoard[r][c-2]) === colorId) || // Horizontal
+                    (r >= 2 && getColorId(gameBoard[r-1][c]) === colorId && getColorId(gameBoard[r-2][c]) === colorId)    // Vertical
+                );
+
+                const candyEl = createCandyElement(colorId);
+                board.appendChild(candyEl);
+                gameBoard[r][c] = candyEl;
+            }
+        }
+        
+        // Agregar el listener al contenedor del tablero
+        board.removeEventListener('click', handleCandyClick); // Prevenir duplicados
+        board.addEventListener('click', handleCandyClick);
+    }
+    
+    // === INICIALIZACIÓN ===
+    
+    // Función de inicialización que se llama al cambiar de pestaña
+    createBoard(); 
+};

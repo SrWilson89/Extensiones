@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Hub de Extensiones</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           ESTILOS BASE y HUB (Globales)
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Usamos un ancho amplio para que el juego 8x8 quepa bien */
+            width: 400px; 
+            min-height: 500px;
+            padding: 0;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Temas Globales */
+        body.light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 500px;
+        }
+
+        h3 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            color: inherit;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Estilos del Navegador de Pestañas (HUB) */
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+        }
+        
+        .tab-group {
+            display: flex;
+            flex-grow: 1;
+            /* overflow-x: auto; */
+            white-space: nowrap; 
+            padding-bottom: 5px;
+        }
+
+        .tab-button {
+            padding: 8px 10px;
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-button.active {
+            opacity: 1;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -7px; 
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: white; 
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+            margin-left: 10px;
+            color: inherit;
+        }
+        .app-container {
+            display: none; 
+        }
+        
+        .app-container.active {
+            display: block; 
+        }
+
+        /* =========================================
+           ESTILOS DE LA APP DE CONTRASEÑAS (#passwords-app)
+           ========================================= */
+        
+        #passwords-app {
+            padding: 0 0 20px 0; 
+        }
+        
+        #passwords-app label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        #passwords-app .length-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        #passwords-app .length-btn {
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        #passwords-app .length-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        #passwords-app .custom-length {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        /* CORRECCIÓN: Estilos para inputs de contraseña */
+        #passwords-app input[type="number"],
+        #passwords-app input[type="text"] {
+            padding: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
+            box-sizing: border-box; 
+            transition: all 0.3s;
+        }
+
+        #passwords-app input[type="number"] {
+            width: 60px;
+        }
+
+        #passwords-app input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-family: 'Roboto', monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        /* FIN CORRECCIÓN */
+
+        #passwords-app #generateBtn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode #passwords-app #generateBtn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a2e;
+        }
+
+        #passwords-app #generateBtn.copied {
+            background: #4caf50;
+            color: white;
+        }
+
+        /* =========================================
+           ESTILOS DE LA APP DE NOTAS (#notes-app)
+           ========================================= */
+
+        #notes-app .note-creator {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* CORRECCIÓN: Selectores específicos de NOTAS */
+        #notes-app textarea {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            color: #333; 
+            background: #ffffff; 
+        }
+        
+        #notes-app .customization-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        #notes-app .option-group label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        
+        #notes-app input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 2px;
+            box-sizing: content-box; 
+        }
+
+        #notes-app select {
+            padding: 6px 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.3s;
+            color: #333;
+            width: 100%;
+        }
+        /* FIN CORRECCIÓN */
+
+        #notes-app button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #notes-app #add-note {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #notes-app ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #notes-app li {
+            padding: 0;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            overflow: hidden; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #notes-app li p {
+            margin: 0;
+            padding: 15px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+
+        #notes-app .note-actions {
+            background: rgba(255, 255, 255, 0.6); 
+            padding: 8px 15px 12px 15px;
+            border-radius: 0 0 12px 12px; 
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        #notes-app .note-actions button {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        #notes-app .copy-btn { background: #4CAF50; color: white; }
+        #notes-app .edit-btn { background: #2196F3; color: white; }
+        #notes-app .delete-btn { background: #f44336; color: white; }
+
+        /* Modal de edición */
+        #notes-app .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #notes-app .modal.active {
+            display: flex;
+        }
+
+        #notes-app .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        #notes-app .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #notes-app .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        /* =========================================
+           ESTILOS DE LA APP DE PRIMARY (#primary-app)
+           ========================================= */
+
+        #primary-app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative; 
+        }
+
+        #primary-app h3 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        #score {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff; 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+        
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr); 
+            grid-template-rows: repeat(8, 1fr);
+            width: 360px; 
+            height: 360px;
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.4); 
+            gap: 1px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .candy {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.08s ease-out; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .candy.selected {
+            transform: scale(1.1);
+            border-color: yellow;
+            box-shadow: 0 0 15px yellow;
+        }
+        
+        .color-0 { background-color: #F44336; }
+        .color-1 { background-color: #4CAF50; }
+        .color-2 { background-color: #2196F3; }
+        .color-3 { background-color: #FFEB3B; }
+        
+        .remove {
+            opacity: 0;
+            transform: scale(0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .explode-animation {
+            position: absolute;
+            width: 45px; 
+            height: 45px;
+            transform: translate(-50%, -50%); 
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.8) 0%, rgba(255, 100, 0, 0.5) 50%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: explode 0.5s forwards;
+            z-index: 10;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .lightning-line {
+            position: absolute;
+            background: #ffffff; 
+            box-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: zap 0.5s ease-out forwards;
+            z-index: 20;
+        }
+
+        @keyframes zap {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        
+        <div class="nav-tabs">
+            <div class="tab-group">
+                <button class="tab-button active" data-app="passwords">🔑 Contraseñas</button>
+                <button class="tab-button" data-app="notes">📝 Notas</button>
+                <!-- <button class="tab-button" data-app="primary">🌈 Primary</button> -->
+            </div>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+
+        <div id="passwords-app" class="app-container active">
+            <h3>Generador de Contraseñas</h3>
+            
+            <label>Longitud rápida:</label>
+            <div class="length-buttons">
+                <button class="length-btn" data-length="8">8</button>
+                <button class="length-btn" data-length="12">12</button>
+                <button class="length-btn active" data-length="16">16</button>
+                <button class="length-btn" data-length="20">20</button>
+            </div>
+
+            <div class="custom-length">
+                <span>Personalizada:</span>
+                <input type="number" id="length" value="16" min="8" max="32">
+            </div>
+            
+            <input type="text" id="passwordOutput" value="" readonly placeholder="Tu contraseña aparecerá aquí">
+            <button id="generateBtn">Generar y Copiar</button>
+        </div>
+
+        <div id="notes-app" class="app-container">
+            <h3>📝 Mis Notas</h3>
+            
+            <div class="note-creator">
+              <textarea id="new-note" placeholder="Escribe una nueva nota..."></textarea>
+              
+              <div class="customization-options">
+                <div class="option-group">
+                  <label>Color de texto</label>
+                  <input type="color" id="text-color" value="#000000">
+                </div>
+                
+                <div class="option-group">
+                  <label>Color de fondo</label>
+                  <input type="color" id="bg-color" value="#fff9c4">
+                </div>
+                
+                <div class="option-group">
+                  <label>Fuente</label>
+                  <select id="font-family">
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="'Courier New', monospace">Courier</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                    <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+                    <option value="Verdana, sans-serif">Verdana</option>
+                    <option value="'Times New Roman', serif">Times</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button id="add-note">➕ Agregar Nota</button>
+            </div>
+            
+            <ul id="notes-list"></ul>
+
+            <div id="edit-modal" class="modal">
+              <div class="modal-content">
+                <h2>✏️ Editar Nota</h2>
+                <textarea id="edit-note-text" placeholder="Edita tu nota..."></textarea>
+                
+                <div class="customization-options">
+                  <div class="option-group">
+                    <label>Color de texto</label>
+                    <input type="color" id="edit-text-color">
+                  </div>
+                  
+                  <div class="option-group">
+                    <label>Color de fondo</label>
+                    <input type="color" id="edit-bg-color">
+                  </div>
+                  
+                  <div class="option-group">
+                    <label>Fuente</label>
+                    <select id="edit-font-family">
+                      <option value="Arial, sans-serif">Arial</option>
+                      <option value="'Courier New', monospace">Courier</option>
+                      <option value="Georgia, serif">Georgia</option>
+                      <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                      <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+                      <option value="Verdana, sans-serif">Verdana</option>
+                      <option value="'Times New Roman', serif">Times</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="modal-buttons">
+                  <button id="cancel-edit" class="delete-btn">Cancelar</button>
+                  <button id="save-edit" class="edit-btn">Guardar</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <!-- <div id="primary-app" class="app-container">
+            <h3>🌈 Primary (Match-3)</h3>
+            <div id="score">Puntuación: 0</div>
+            <div id="game-board">
+                </div>
+        </div> -->
+
+    </div>
+
+    <script src="popup.js"></script> 
+    <script src="apps/passwords.js"></script>
+    <script src="apps/notes.js"></script>
+    <script src="apps/primary.js"></script>
+</body>
+</html>
