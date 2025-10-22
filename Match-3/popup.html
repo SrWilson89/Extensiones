@@ -3,22 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Crush Match-3</title>
+    <title>Color Crush Match-3 | Casino</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
 
-    <div id="game-container">
-        <h1>🎮 Color Crush</h1>
-
-        <div id="scores-panel">
-            <p>Puntuación: <span id="score">0</span></p>
-            <p>Máximo: <span id="high-score">0</span></p>
+    <div id="app-container">
+        
+        <div id="nav-tabs">
+            <button id="tab-game" class="nav-button active">🎮 Match-3</button>
+            <button id="tab-casino" class="nav-button">🎰 Casino</button>
         </div>
 
-        <div id="game-board"></div>
+        <div id="view-game" class="view active-view">
+            <h1>🎮 Color Crush</h1>
 
-        <button id="restart-button">🔄 Reiniciar Juego</button>
+            <div id="scores-panel">
+                <p>Puntuación: <span id="score">0</span></p>
+                <p>Máximo: <span id="high-score">0</span></p>
+            </div>
+
+            <div id="game-board"></div>
+
+            <button id="restart-button">🔄 Reiniciar Juego</button>
+        </div>
+
+        <div id="view-casino" class="view hidden-view">
+            <h1>🎰 La Casa de Apuestas</h1>
+            
+            <div id="casino-scores">
+                <p>Monedas Actuales: <span id="casino-score-display">0</span></p>
+            </div>
+            
+            <h2>Máquina Tragaperras</h2>
+            <div id="slot-machine-container">
+                <div class="reels">
+                    <div id="reel-1" class="reel">?</div>
+                    <div id="reel-2" class="reel">?</div>
+                    <div id="reel-3" class="reel">?</div>
+                </div>
+                
+                <div class="slot-controls">
+                    <label for="slot-bet">Apuesta:</label>
+                    <input type="number" id="slot-bet" value="10" min="10" step="10">
+                    <button id="spin-button">GIRAR</button>
+                </div>
+                <p id="slot-result" class="result-message"></p>
+                <p class="pay-info">PAGOS: 3 Iguales (x5), 2 🍒 (x2), 3 💎 (x20)</p>
+            </div>
+            
+            <hr class="separator">
+
+            <h2>Mini Ruleta</h2>
+            <div id="roulette-container">
+                <div class="roulette-display">
+                    <span id="roulette-number">?</span>
+                </div>
+                <div class="roulette-controls">
+                    <label for="roulette-bet">Apuesta:</label>
+                    <input type="number" id="roulette-bet" value="20" min="10" step="10">
+                    
+                    <select id="roulette-option">
+                        <option value="red">Rojo (x2)</option>
+                        <option value="black">Negro (x2)</option>
+                        <option value="even">Par (x2)</option>
+                        <option value="odd">Impar (x2)</option>
+                        <option value="number-35">Número Exacto (x35)</option>
+                    </select>
+                    
+                    <input type="number" id="roulette-number-input" placeholder="35" min="0" max="36" value="1">
+                    <button id="roulette-spin-button">GIRAR</button>
+                </div>
+                <p id="roulette-result" class="result-message"></p>
+                <p class="pay-info">El **0** es Verde, solo paga en "Número Exacto".</p>
+            </div>
+        </div>
+
     </div>
 
     <script src="popup.js"></script>

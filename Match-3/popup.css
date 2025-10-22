@@ -1,6 +1,7 @@
+/* --- ESTILOS BASE DEL ARCHIVO ORIGINAL --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-width: 380px;
+    min-width: 420px; /* Aumentado ligeramente para el casino */
     text-align: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     margin: 0;
@@ -36,65 +37,43 @@ h1 {
     font-size: 18px;
 }
 
+/* --- TABLERO DE JUEGO --- */
 #game-board {
     display: grid;
-    grid-template-columns: repeat(8, 1fr); 
-    grid-template-rows: repeat(8, 1fr);
-    width: 336px;
-    height: 336px;
-    margin: 0 auto;
+    grid-template-columns: repeat(8, 1fr);
+    width: 380px; /* 8 * 45px (tile) + padding/border */
+    margin: 0 auto 20px;
+    border: 5px solid #fff;
     border-radius: 10px;
-    background-color: #2d3748;
-    position: relative;
-    padding: 8px;
-    gap: 4px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .tile {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    position: relative;
-}
-
-.tile:hover {
-    transform: scale(1.1);
-    filter: brightness(1.2);
-}
-
-/* Colores Base con gradientes circulares */
-.color-yellow { 
-    background: radial-gradient(circle at 30% 30%, #FFF176, #FFEB3B, #FBC02D);
-    box-shadow: 0 2px 4px rgba(251, 192, 45, 0.4);
-}
-.color-blue { 
-    background: radial-gradient(circle at 30% 30%, #64B5F6, #2196F3, #1976D2);
-    box-shadow: 0 2px 4px rgba(25, 118, 210, 0.4);
-}
-.color-red { 
-    background: radial-gradient(circle at 30% 30%, #EF5350, #F44336, #D32F2F);
-    box-shadow: 0 2px 4px rgba(211, 47, 47, 0.4);
-}
-.color-pink { 
-    background: radial-gradient(circle at 30% 30%, #F06292, #E91E63, #C2185B);
-    box-shadow: 0 2px 4px rgba(194, 24, 91, 0.4);
-}
-.color-green { 
-    background: radial-gradient(circle at 30% 30%, #66BB6A, #4CAF50, #388E3C);
-    box-shadow: 0 2px 4px rgba(56, 142, 60, 0.4);
-}
-
-/* Estilos de las Fichas Especiales */
-.special-square::after {
-    content: "◼️";
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
     font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    transition: transform 0.2s ease-out;
+    position: relative;
+    border-radius: 5px;
+}
+
+/* Colores */
+.color-yellow { background-color: #FFEB3B; }
+.color-blue { background-color: #2196F3; }
+.color-red { background-color: #F44336; }
+.color-pink { background-color: #E91E63; }
+.color-green { background-color: #4CAF50; }
+
+/* Poderes */
+.special-square::before {
+    content: "◻️";
+    font-size: 22px;
     position: absolute;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
@@ -130,24 +109,24 @@ h1 {
         transform: scale(1.3);
         opacity: 0.5;
     }
-    100% { 
+    100% {
         transform: scale(0);
         opacity: 0;
     }
 }
 
 .removing {
-    animation: disappear 0.3s ease-out forwards;
+    animation: disappear 0.3s forwards;
+    pointer-events: none;
 }
 
 /* Botón de reinicio */
 #restart-button {
-    margin-top: 15px;
-    padding: 10px 24px;
+    padding: 10px 20px;
     font-size: 16px;
     font-weight: bold;
     color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FFA07A 0%, #FF6347 100%);
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -156,10 +135,224 @@ h1 {
 }
 
 #restart-button:hover {
+    background: linear-gradient(135deg, #FF6347 0%, #FFA07A 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
 }
 
-#restart-button:active {
-    transform: translateY(0);
+
+/* ---------------------------------------------------------------------- */
+/* --- ESTILOS DEL CASINO Y NAVEGACIÓN (NUEVOS) --- */
+/* ---------------------------------------------------------------------- */
+
+/* --- ESTILOS DE NAVEGACIÓN --- */
+#nav-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.nav-button {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.nav-button.active {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #764ba2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* --- ESTILOS DE VISTA --- */
+/* Corregido el sistema de ocultar/mostrar */
+.view {
+    width: 100%;
+    transition: opacity 0.3s ease;
+    box-sizing: border-box;
+}
+
+.hidden-view {
+    display: none;
+    opacity: 0;
+}
+
+.active-view {
+    display: block;
+    opacity: 1;
+}
+
+/* --- ESTILOS DEL CASINO --- */
+
+#casino-scores {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#casino-scores p {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+}
+
+#casino-scores span {
+    color: #d32f2f; /* Rojo para el saldo de las apuestas */
+    font-size: 20px;
+}
+
+h2 {
+    color: #fff;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.separator {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    margin: 25px 0;
+}
+
+/* Estilos de Tragaperras */
+#slot-machine-container {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.reels {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+
+.reel {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 40px;
+    background-color: #f7f7f7;
+    border: 3px solid #FFEB3B;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.1s ease-out;
+}
+
+.slot-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.slot-controls input {
+    width: 60px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+/* Estilos de Ruleta */
+#roulette-container {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.roulette-display {
+    margin-bottom: 15px;
+}
+
+#roulette-number {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 50%;
+    color: white;
+    background-color: #333;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    transition: background-color 0.5s;
+}
+
+#roulette-number.red { background-color: #D32F2F; }
+#roulette-number.black { background-color: #212121; }
+#roulette-number.green { background-color: #388E3C; }
+
+.roulette-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.roulette-controls select, .roulette-controls input[type="number"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#roulette-number-input {
+    width: 40px;
+}
+
+/* Mensajes y Botones */
+.result-message {
+    font-weight: bold;
+    color: #FFEB3B;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+.pay-info {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 10px;
+}
+
+/* Reutilizar estilo de botón para el casino */
+#spin-button, #roulette-spin-button {
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #FF6347 0%, #D32F2F 100%); /* Nuevo color para casino */
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#spin-button:hover, #roulette-spin-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#spin-button:disabled, #roulette-spin-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

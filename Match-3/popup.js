@@ -7,8 +7,17 @@ const HIGH_SCORE_KEY = 'colorCrushHighScore';
 // Puntuación por poderes
 const SCORE_4_MATCH = 20; // Puntuación al crear el 'square'
 const SCORE_5_MATCH = 50; // Puntuación al crear el 'rayo'
-const SCORE_15_RAYO = 150; // Puntuación por 15 fichas eliminadas por el rayo
 const SCORE_3X3_SQUARE = 90; // Puntuación por 9 fichas eliminadas por el square
+
+// --- CONFIGURACIÓN DEL CASINO ---
+const SYMBOLS = ['🍒', '🍋', '🔔', '💎'];
+const PAYOUTS = {
+    '🍒,🍒,🍒': 5,
+    '🍋,🍋,🍋': 8,
+    '🔔,🔔,🔔': 12,
+    '💎,💎,💎': 20,
+    '🍒,🍒': 2, // Dos cerezas en las dos primeras posiciones
+};
 
 // --- ESTADO DEL JUEGO ---
 let board = [];
@@ -16,10 +25,81 @@ let score = 0;
 let highScore = 0;
 let selectedTile = null;
 let isProcessing = false; // Evitar clicks durante animaciones
+let isCasinoProcessing = false; // Evitar clicks en casino durante animaciones
 
 const gameBoardEl = document.getElementById('game-board');
 const scoreEl = document.getElementById('score');
 const highScoreEl = document.getElementById('high-score');
+const casinoScoreDisplayEl = document.getElementById('casino-score-display');
+
+// --- ELEMENTOS DEL CASINO ---
+const reelEls = [
+    document.getElementById('reel-1'),
+    document.getElementById('reel-2'),
+    document.getElementById('reel-3')
+];
+const slotBetInput = document.getElementById('slot-bet');
+const slotResultEl = document.getElementById('slot-result');
+
+const rouletteNumberEl = document.getElementById('roulette-number');
+const rouletteBetInput = document.getElementById('roulette-bet');
+const rouletteOptionSelect = document.getElementById('roulette-option');
+const rouletteNumberInput = document.getElementById('roulette-number-input');
+const rouletteResultEl = document.getElementById('roulette-result');
+
+
+// ----------------------------------------------------------------------
+// GESTIÓN DE VISTAS (NAVEGACIÓN)
+// ----------------------------------------------------------------------
+
+function setupNavigation() {
+    const tabGame = document.getElementById('tab-game');
+    const tabCasino = document.getElementById('tab-casino');
+    const viewGame = document.getElementById('view-game');
+    const viewCasino = document.getElementById('view-casino');
+
+    tabGame.addEventListener('click', () => {
+        // Actualizar clases de botones
+        tabGame.classList.add('active');
+        tabCasino.classList.remove('active');
+        
+        // Mostrar vista del juego
+        viewGame.classList.remove('hidden-view');
+        viewGame.classList.add('active-view');
+        
+        // Ocultar vista del casino
+        viewCasino.classList.remove('active-view');
+        viewCasino.classList.add('hidden-view');
+        
+        updateCasinoScoreDisplay(); // Refrescar puntuación al volver
+    });
+
+    tabCasino.addEventListener('click', () => {
+        // Actualizar clases de botones
+        tabCasino.classList.add('active');
+        tabGame.classList.remove('active');
+        
+        // Mostrar vista del casino
+        viewCasino.classList.remove('hidden-view');
+        viewCasino.classList.add('active-view');
+        
+        // Ocultar vista del juego
+        viewGame.classList.remove('active-view');
+        viewGame.classList.add('hidden-view');
+        
+        updateCasinoScoreDisplay(); // Refrescar puntuación al entrar
+    });
+
+    // Controlar visibilidad del input de número en la ruleta
+    rouletteOptionSelect.addEventListener('change', () => {
+        rouletteNumberInput.style.display = (rouletteOptionSelect.value === 'number-35') ? 'inline-block' : 'none';
+    });
+    rouletteNumberInput.style.display = 'none'; // Inicialmente oculto
+}
+
+function updateCasinoScoreDisplay() {
+    casinoScoreDisplayEl.textContent = score;
+}
 
 // ----------------------------------------------------------------------
 // GESTIÓN DE ALMACENAMIENTO
@@ -33,7 +113,6 @@ async function loadHighScore() {
         highScore = result[HIGH_SCORE_KEY] || 0;
         highScoreEl.textContent = highScore;
     } else {
-        console.warn("API de storage no disponible. Usando localStorage de respaldo.");
         highScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY)) || 0;
         highScoreEl.textContent = highScore;
     }
@@ -80,12 +159,15 @@ function initializeBoard() {
     selectedTile = null;
     isProcessing = false;
     renderBoard();
+    updateCasinoScoreDisplay();
 }
 
 function checkMatchAt(r, c, color) {
+    // Comprobar horizontal
     if (c >= 2 && board[r][c-1]?.color === color && board[r][c-2]?.color === color) {
         return true;
     }
+    // Comprobar vertical
     if (r >= 2 && board[r-1][c]?.color === color && board[r-2][c]?.color === color) {
         return true;
     }
@@ -205,20 +287,26 @@ async function attemptPowerSwap(tile1, tile2, t1Data, t2Data) {
     
     try {
         if (t1Data.type !== 'base' && t2Data.type !== 'base') {
+            // Intercambio de dos poderes (ej. rayo con cuadrado)
             if (t1Data.type === 'rayo' || t2Data.type === 'rayo') {
+                // Rayo con otro poder
                 await processPowerActivation(t1Data.type === 'rayo' ? t1Data : t2Data, t1Data.type === 'rayo' ? t2Data : t1Data);
             } else {
-                await processPowerActivation(t1Data, t2Data);
+                // Cuadrado con Cuadrado (simplemente activa ambos)
+                await processPowerActivation(t1Data, null);
+                await processPowerActivation(t2Data, null);
             }
         } else if (t1Data.type !== 'base') {
+            // Poder con base
             await processPowerActivation(t1Data, t2Data);
         } else if (t2Data.type !== 'base') {
+            // Base con Poder
             await processPowerActivation(t2Data, t1Data);
         }
         
-        await processMatchesLoop(findAllMatches()); // Process any subsequent matches
+        await processMatchesLoop(findAllMatches()); // Procesar cualquier match posterior
     } finally {
-        isProcessing = false; // Ensure isProcessing is reset
+        isProcessing = false; 
     }
 }
 
@@ -234,7 +322,7 @@ function swapTiles(r1, c1, r2, c2) {
 }
 
 // ----------------------------------------------------------------------
-// GESTIÓN DE PODERES
+// GESTIÓN DE PODERES, DETECCIÓN, CAÍDA Y RELLENO
 // ----------------------------------------------------------------------
 
 async function processPowerActivation(specialTile, targetTile) {
@@ -245,7 +333,7 @@ async function processPowerActivation(specialTile, targetTile) {
             await activateRayoPower(specialTile, targetTile);
         }
     } finally {
-        await fallAndRefill(); // Ensure board is updated after power activation
+        await fallAndRefill(); 
         renderBoard();
     }
 }
@@ -255,6 +343,12 @@ async function activateSquarePower(centerTile) {
     const r = centerTile.row;
     const c = centerTile.col;
     
+    // Marcar el centro para eliminarlo
+    if (board[r][c] !== null) {
+        tilesToClear.push(board[r][c]);
+    }
+    
+    // Marcar el 3x3 alrededor (incluyendo el centro)
     for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
             const nr = r + dr;
@@ -272,9 +366,13 @@ async function activateSquarePower(centerTile) {
 async function activateRayoPower(rayoTile, targetTile) {
     const tilesToClear = [];
     
-    board[rayoTile.row][rayoTile.col] = null; // Remove rayo tile immediately
+    // Eliminar el rayo inmediatamente (para que no afecte la caída)
+    if (rayoTile) {
+        board[rayoTile.row][rayoTile.col] = null;
+    }
     
     if (targetTile && targetTile.type === 'base') {
+        // Intercambio con ficha base: elimina todas de ese color
         const targetColor = targetTile.color;
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
@@ -284,6 +382,7 @@ async function activateRayoPower(rayoTile, targetTile) {
             }
         }
     } else {
+        // Rayo con aire, o con otro poder: elimina un número aleatorio de fichas
         const allTiles = [];
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
@@ -297,6 +396,7 @@ async function activateRayoPower(rayoTile, targetTile) {
         const maxCount = 25;
         let count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
         count = Math.min(count, allTiles.length);
+        
         for (let i = 0; i < count; i++) {
             const index = Math.floor(Math.random() * allTiles.length);
             tilesToClear.push(allTiles[index]);
@@ -304,6 +404,7 @@ async function activateRayoPower(rayoTile, targetTile) {
         }
     }
     
+    // Puntuación base por ficha eliminada: 10
     await clearTiles(tilesToClear, tilesToClear.length * 10);
 }
 
@@ -329,11 +430,8 @@ async function clearTiles(tiles, baseScore) {
     score += baseScore;
     scoreEl.textContent = score;
     checkAndSaveHighScore();
+    updateCasinoScoreDisplay();
 }
-
-// ----------------------------------------------------------------------
-// DETECCIÓN DE MATCHES
-// ----------------------------------------------------------------------
 
 function findAllMatches() {
     const matchedGroups = [];
@@ -356,7 +454,6 @@ function findAllMatches() {
                 matchedGroups.push({ tiles: matchTiles, count, direction: 'horizontal' });
             }
             
-            // Saltar al final del match para evitar solapamientos
             if (count > 1) c += count - 1;
         }
     }
@@ -379,17 +476,12 @@ function findAllMatches() {
                 matchedGroups.push({ tiles: matchTiles, count, direction: 'vertical' });
             }
             
-            // Saltar al final del match
             if (count > 1) r += count - 1;
         }
     }
     
     return matchedGroups;
 }
-
-// ----------------------------------------------------------------------
-// PROCESAMIENTO DE MATCHES
-// ----------------------------------------------------------------------
 
 async function processMatchesLoop(matches, swapInitiator = null, swapTarget = null) {
     while (matches.length > 0) {
@@ -440,10 +532,8 @@ async function processMatches(matches, swapInitiator, swapTarget) {
         }
         
         if (specialType) {
-            // Encontrar posición preferida
             let preferredTile = findPreferredTile(group.tiles, swapTarget, swapInitiator);
             if (!preferredTile) {
-                // Fallback al tile del medio
                 const middleIndex = Math.floor(group.tiles.length / 2);
                 preferredTile = group.tiles[middleIndex];
             }
@@ -465,6 +555,7 @@ async function processMatches(matches, swapInitiator, swapTarget) {
     score += currentScoreIncrease;
     scoreEl.textContent = score;
     checkAndSaveHighScore();
+    updateCasinoScoreDisplay(); 
 }
 
 function findPreferredTile(tiles, swapTarget, swapInitiator) {
@@ -479,10 +570,6 @@ function findPreferredTile(tiles, swapTarget, swapInitiator) {
     
     return null;
 }
-
-// ----------------------------------------------------------------------
-// CAÍDA Y RELLENO
-// ----------------------------------------------------------------------
 
 async function fallAndRefill() {
     for (let c = 0; c < COLS; c++) {
@@ -510,6 +597,168 @@ async function fallAndRefill() {
 }
 
 // ----------------------------------------------------------------------
+// LÓGICA DEL CASINO: TRAGAPERRAS
+// ----------------------------------------------------------------------
+
+function getRandomSymbol() {
+    return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+}
+
+async function spinSlot() {
+    if (isCasinoProcessing) return;
+    
+    const bet = parseInt(slotBetInput.value);
+    
+    if (isNaN(bet) || bet < 10 || bet % 10 !== 0 || bet > score) {
+        slotResultEl.textContent = 'Apuesta inválida o insuficiente. Mín: 10 y múltiplo de 10.';
+        return;
+    }
+
+    isCasinoProcessing = true;
+    slotResultEl.textContent = '¡GIRANDO...! 🤞';
+    
+    // Deducir apuesta
+    score -= bet;
+    scoreEl.textContent = score;
+    updateCasinoScoreDisplay();
+    
+    // Animación de giro
+    reelEls.forEach(reel => {
+        reel.textContent = '🎰';
+        reel.classList.add('spin-animation');
+    });
+    await sleep(1500); 
+
+    // Obtener resultados
+    const results = [
+        getRandomSymbol(),
+        getRandomSymbol(),
+        getRandomSymbol()
+    ];
+    
+    // Mostrar resultados y detener animación
+    reelEls.forEach((reel, index) => {
+        reel.classList.remove('spin-animation');
+        // Pequeño retraso para la sensación de detención en cascada
+        setTimeout(() => {
+            reel.textContent = results[index];
+        }, index * 200);
+    });
+
+    await sleep(1000); // Esperar que termine la cascada
+
+    // Comprobar ganancias
+    const key = results.join(',');
+    let winnings = 0;
+    
+    if (PAYOUTS[key]) {
+        // Match exacto de 3
+        winnings = bet * PAYOUTS[key];
+        slotResultEl.textContent = `¡JACKPOT! 🏆 Ganaste ${winnings} monedas.`;
+    } else if (results[0] === '🍒' && results[1] === '🍒') {
+        // Dos cerezas
+        winnings = bet * PAYOUTS['🍒,🍒'];
+        slotResultEl.textContent = `¡Dos Cerezas! 🍒🍒 Ganaste ${winnings} monedas.`;
+    } else {
+        slotResultEl.textContent = `Perdiste ${bet} monedas. ¡Vuelve a intentarlo!`;
+    }
+
+    // Sumar ganancias
+    score += winnings;
+    scoreEl.textContent = score;
+    checkAndSaveHighScore();
+    updateCasinoScoreDisplay();
+    
+    isCasinoProcessing = false;
+}
+
+// ----------------------------------------------------------------------
+// LÓGICA DEL CASINO: RULETA
+// ----------------------------------------------------------------------
+
+const ROULETTE_COLORS = {
+    0: 'green', 1: 'red', 2: 'black', 3: 'red', 4: 'black', 5: 'red', 6: 'black',
+    7: 'red', 8: 'black', 9: 'red', 10: 'black', 11: 'black', 12: 'red', 13: 'black',
+    14: 'red', 15: 'black', 16: 'red', 17: 'black', 18: 'red', 19: 'red', 20: 'black',
+    21: 'red', 22: 'black', 23: 'red', 24: 'black', 25: 'red', 26: 'black',
+    27: 'red', 28: 'black', 29: 'black', 30: 'red', 31: 'black', 32: 'red', 33: 'black',
+    34: 'red', 35: 'black', 36: 'red'
+};
+
+async function spinRoulette() {
+    if (isCasinoProcessing) return;
+    
+    const bet = parseInt(rouletteBetInput.value);
+    const option = rouletteOptionSelect.value;
+    let targetNumber = -1;
+
+    if (option === 'number-35') {
+        targetNumber = parseInt(rouletteNumberInput.value);
+        if (isNaN(targetNumber) || targetNumber < 0 || targetNumber > 36) {
+            rouletteResultEl.textContent = 'Número de apuesta inválido (0-36).';
+            return;
+        }
+    }
+
+    if (isNaN(bet) || bet < 10 || bet % 10 !== 0 || bet > score) {
+        rouletteResultEl.textContent = 'Apuesta inválida o insuficiente. Mín: 10 y múltiplo de 10.';
+        return;
+    }
+
+    isCasinoProcessing = true;
+    rouletteResultEl.textContent = '¡HACIENDO GIRAR LA RULETA...! 🎡';
+    rouletteNumberEl.textContent = '❓';
+    rouletteNumberEl.classList.remove('red', 'black', 'green'); // Limpiar color anterior
+
+    // Deducir apuesta
+    score -= bet;
+    scoreEl.textContent = score;
+    updateCasinoScoreDisplay();
+    
+    await sleep(2000); // Tiempo de giro
+
+    // Obtener resultado (0 a 36)
+    const resultNumber = Math.floor(Math.random() * 37);
+    const resultColor = ROULETTE_COLORS[resultNumber];
+
+    // Mostrar resultado
+    rouletteNumberEl.textContent = resultNumber;
+    rouletteNumberEl.classList.add(resultColor);
+    
+    // Comprobar ganancias
+    let winnings = 0;
+    let winMultiplier = 0;
+    let didWin = false;
+
+    if (option === 'red' && resultColor === 'red') {
+        winMultiplier = 2; didWin = true;
+    } else if (option === 'black' && resultColor === 'black') {
+        winMultiplier = 2; didWin = true;
+    } else if (option === 'even' && resultNumber !== 0 && resultNumber % 2 === 0) {
+        winMultiplier = 2; didWin = true;
+    } else if (option === 'odd' && resultNumber % 2 !== 0) {
+        winMultiplier = 2; didWin = true;
+    } else if (option === 'number-35' && resultNumber === targetNumber) {
+        winMultiplier = 35; didWin = true;
+    }
+    
+    if (didWin) {
+        winnings = bet * winMultiplier;
+        score += winnings;
+        rouletteResultEl.textContent = `¡GANASTE! El ${resultNumber} es ${resultColor.toUpperCase()}. Ganancia: ${winnings} monedas.`;
+    } else {
+        rouletteResultEl.textContent = `Perdiste. El resultado fue ${resultNumber} (${resultColor.toUpperCase()}).`;
+        // La apuesta ya fue deducida
+    }
+    
+    scoreEl.textContent = score;
+    checkAndSaveHighScore();
+    updateCasinoScoreDisplay();
+    
+    isCasinoProcessing = false;
+}
+
+// ----------------------------------------------------------------------
 // UTILIDADES
 // ----------------------------------------------------------------------
 
@@ -527,7 +776,16 @@ function sleep(ms) {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadHighScore().then(initializeBoard);
+    
+    // Match-3 Events
     document.getElementById('restart-button').addEventListener('click', () => {
         initializeBoard();
     });
+
+    // Casino Events
+    document.getElementById('spin-button').addEventListener('click', spinSlot);
+    document.getElementById('roulette-spin-button').addEventListener('click', spinRoulette);
+    
+    // Setup Navigation
+    setupNavigation();
 });
