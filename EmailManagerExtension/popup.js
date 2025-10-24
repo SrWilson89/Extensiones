@@ -306,8 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
       item.innerHTML = `
         <div class="email-info">
           <div class="email-subject">${email.subject}</div>
-          <div class="email-from">De: ${email.from}</div>
-          <div class="email-preview">${email.snippet}</div>
+          <div class="email-from">De: ${email.sender}</div>
+          <div class="email-preview">${new Date(email.time).toLocaleString()}</div>
         </div>
         <div class="email-actions">
            <button class="delete-btn" data-id="${email.id}" aria-label="Borrar correo">🗑️</button>
@@ -357,7 +357,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initialize() {
       // 1. Cargar el tema y las preferencias guardadas primero
-      chrome.storage.local.get(['activeToken', 'activeUserEmail', 'activeUserName', 'theme', 'preferences'], (data) => {
+      chrome.storage.local.get([
+          'activeToken', 
+          'activeUserEmail', 
+          'activeUserName', 
+          'theme', 
+          'preferences',
+          'refreshToken'
+      ], (data) => {
           
           // Aplicar Tema
           if (data.theme === 'dark') {

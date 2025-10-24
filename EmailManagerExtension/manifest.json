@@ -23,7 +23,7 @@
   "permissions": [
     "storage",
     "identity",
-    "alarms" 
+    "alarms"
   ],
   "host_permissions": [
     "https://graph.microsoft.com/*",
